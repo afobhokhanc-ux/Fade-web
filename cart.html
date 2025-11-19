@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopping Cart | KGS</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      color: #222;
+    }
+
+    header {
+      background: #fff;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 { font-size: 1.4rem; font-weight: 600; }
+    header a { color: #222; text-decoration: none; font-size: 1.2rem; }
+
+    .cart-container {
+      max-width: 800px;
+      margin: 2rem auto 5rem;
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding: 1rem 0;
+    }
+
+    .cart-item img {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .cart-info { flex: 1; margin-left: 1rem; }
+    .cart-info h3 { font-size: 1rem; margin: 0; }
+    .cart-info p { font-size: 0.9rem; color: #777; }
+
+    .cart-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cart-actions input {
+      width: 40px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 0.2rem;
+    }
+
+    .cart-actions button {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .remove-btn {
+      background: #ffeded;
+      color: #ff3333;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.3s;
+    }
+
+    .remove-btn:hover { background: #ffcccc; }
+
+    .cart-summary { text-align: right; margin-top: 2rem; }
+    .cart-summary h2 { font-size: 1.2rem; margin-bottom: 1rem; }
+
+    .checkout-btn {
+      background: #ff5252;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .checkout-btn:hover { background: #ff3333; }
+
+    .mobile-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0.5rem 0;
+      z-index: 1000;
+    }
+
+    .mobile-bottom-nav a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #444;
+      font-size: 0.8rem;
+    }
+
+    .mobile-bottom-nav i { font-size: 1.3rem; margin-bottom: 3px; }
+
+    @media (min-width: 768px) {
+      .mobile-bottom-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html"><i class="fa-solid fa-arrow-left"></i></a>
+    <h1>Your Cart</h1>
+    <span></span>
+  </header>
+
+  <!-- DYNAMIC CART -->
+  <div class="cart-container" id="cartContainer">
+    <p style="text-align:center;">Loading your cart...</p>
+  </div>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="#" id="categoryBtn"><i class="fa-solid fa-th"></i><span>Category</span></a>
+    <a href="#" id="accountBtn"><i class="fa-regular fa-user"></i><span>Account</span></a>
+    <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i><span>Cart</span></a>
+  </nav>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cartContainer = document.getElementById("cartContainer");
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      if (cart.length === 0) {
+        cartContainer.innerHTML = `
+          <div style="text-align:center; padding:40px;">
+            <i class="fa-solid fa-cart-arrow-down" style="font-size:2rem; color:#aaa;"></i>
+            <p>Your cart is empty</p>
+            <a href="product.html" style="color:#000; text-decoration:underline;">Go Shopping</a>
+          </div>
+        `;
+        return;
+      }
+
+      cartContainer.innerHTML = `
+        ${cart.map((item, i) => `
+          <div class="cart-item">
+            <img src="${item.image}" alt="${item.name}">
+            <div class="cart-info">
+              <h3>${item.name}</h3>
+              <p>₦${item.price}</p>
+            </div>
+            <div class="cart-actions">
+              <button class="minus">-</button>
+              <input type="text" value="${item.quantity || 1}" readonly>
+              <button class="plus">+</button>
+              <button class="remove-btn" data-index="${i}">Remove</button>
+            </div>
+          </div>
+        `).join("")}
+        <div class="cart-summary">
+          <h2 id="cartTotal"></h2>
+          <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+      `;
+
+      function updateTotal() {
+        const total = cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+        document.getElementById("cartTotal").textContent = `Total: ₦${total}`;
+      }
+
+      updateTotal();
+
+      document.querySelectorAll(".plus").forEach((btn, i) => {
+        btn.addEventListener("click", () => {
+          cart[i].quantity = (cart[i].quantity || 1) + 1;
+          localStorage.setItem("cart", JSON.stringify(cart));
+          location.reload();
+        });
+      });
+
+      document.querySelectorAll(".minus").forEach((btn, i) => {
+        btn.addEventListener("click", () => {
+          if ((cart[i].quantity || 1) > 1) {
+            cart[i].quantity--;
+            localStorage.setItem("cart", JSON.stringify(cart));
+            location.reload();
+          }
+        });
+      });
+
+      document.querySelectorAll(".remove-btn").forEach((btn, i) => {
+        btn.addEventListener("click", () => {
+          cart.splice(i, 1);
+          localStorage.setItem("cart", JSON.stringify(cart));
+          location.reload();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

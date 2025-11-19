@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kashanty Glams & Surprises</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --nav-h:64px;
+      --bg:#fdf2e9;
+      --ink:#111;
+      --muted:#6b7280;
+      --accent:#a38686;
+      --drawer-width:320px;
+    }
+
+    /* ---------- Base ---------- */
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+
+    /* ---------- Top Nav ---------- */
+    .site-nav{
+      position:sticky;top:0;left:0;right:0;
+      z-index:1100;
+      background:#fff;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+    }
+    .nav-inner{
+      max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;height:var(--nav-h);
+    }
+    .brand{font-weight:700; font-size:1.05rem; letter-spacing:0.02em}
+    .primary-nav{display:flex;gap:22px;list-style:none;margin:0;padding:0;align-items:center}
+    .primary-nav a{font-size:0.92rem;text-transform:uppercase;opacity:.95;padding:6px 0;border-bottom:2px solid transparent}
+    .primary-nav a.is-active{border-bottom-color:var(--accent)}
+    .utility{display:flex;align-items:center;gap:8px}
+
+    .icon-btn{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;border:none;background:transparent;cursor:pointer;color:var(--ink)}
+    .icon-btn:hover{background:#f3f4f6}
+
+    .cart{position:relative}
+    .cart .badge{position:absolute;top:1px;right:0;background:var(--ink);color:#fff;min-width:18px;height:18px;line-height:18px;border-radius:999px;font-size:.7rem;padding:0 5px;text-align:center}
+
+    /* Hide hamburger on desktop, show only mobile */
+    .hamburger{display:none}
+
+    /* ---------- Nav search (slide-down) ---------- */
+    .nav-search{display:none;border-top:1px solid rgba(0,0,0,0.05);background:#fff}
+    .nav-search form{max-width:1100px;margin:0 auto;padding:10px 18px;display:flex;gap:10px;align-items:center}
+    .nav-search input{flex:1;height:40px;padding:8px 12px;border:1px solid #e6e6e6;border-radius:8px}
+    .nav-search button{width:40px;height:40px;border-radius:8px;border:none;background:#f3f3f3;display:grid;place-items:center}
+
+    /* ---------- Hero & sections (kept simple) ---------- */
+    .hero{padding:90px 20px;text-align:center;background:url('https://source.unsplash.com/1600x600/?cosmetics,beauty') center/cover no-repeat;color:#fff;position:relative}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(0,0,0,0.12))}
+    .hero .hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+    .hero h1{font-size:2.4rem;margin:0 0 12px}
+    .hero p{margin:0 0 18px}
+
+    .section{max-width:1100px;margin:40px auto;padding:0 20px}
+    .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+    .product{background:#fff;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.04);text-align:left}
+    .product img{width:100%;height:200px;object-fit:cover;display:block}
+    .product .info{padding:12px}
+
+    /* ---------- Bottom Nav (mobile) ---------- */
+    .bottom-nav{
+      position:fixed;left:0;right:0;bottom:0;height:64px;background:#fff;border-top:1px solid rgba(0,0,0,0.06);display:flex;z-index:1000;align-items:center;justify-content:space-around;padding:0 6px
+    }
+    .bottom-nav .nav-item{flex:1;text-align:center;font-size:12px;color:#444;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 0}
+    .bottom-nav .nav-item i{font-size:18px;margin-bottom:4px}
+
+    /* Show bottom nav only on small screens */
+    @media(min-width:961px){.bottom-nav{display:none}}
+
+    /* ---------- Category Drawer ---------- */
+    .category-drawer{
+      position:fixed;top:0;left:0;width:var(--drawer-width);height:100vh;
+      background: linear-gradient(180deg,#fff,#f7f6f6);
+      box-shadow: 6px 0 30px rgba(0,0,0,0.12);
+      transform:translateX(-120%); /* hidden */
+      transition:transform .32s cubic-bezier(.2,.9,.25,1);
+      z-index:2000;display:flex;flex-direction:column;padding:22px 18px;
+      -webkit-overflow-scrolling:touch;
+    }
+    .category-drawer.active{transform:translateX(0)}
+    .category-drawer .drawer-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .category-drawer h3{margin:0;font-size:20px;font-weight:700}
+    .category-drawer .close-btn{background:transparent;border:none;font-size:22px;cursor:pointer;color:#333}
+    .category-drawer hr{border:0;border-top:1px solid rgba(0,0,0,0.06);margin:14px 0}
+    .category-drawer ul{list-style:none;padding:0;margin:8px 0;overflow:auto}
+    .category-drawer li{margin:2px 0}
+    .category-drawer a{display:flex;gap:12px;align-items:center;padding:12px;border-radius:8px;color:#333;font-weight:600}
+    .category-drawer a i{width:28px;text-align:center;color:var(--accent)}
+    .category-drawer a:hover{background:#f3f3f3}
+
+    /* overlay */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:1900}
+    .overlay.active{opacity:1;pointer-events:auto}
+
+    /* when drawer is open prevent body scroll */
+    .drawer-open{overflow:hidden;height:100vh}
+
+    /* make drawer hidden on wider screens (we only want it on mobile) */
+    @media(min-width:769px){
+      .category-drawer{display:none}
+      .overlay{display:none}
+    }
+
+    /* a bit of polish - large text in drawer on mobile */
+    @media(max-width:420px){
+      .category-drawer a{font-size:16px;padding:14px}
+    }
+
+    /* Hide desktop nav on mobile */
+@media (max-width: 768px) {
+  .site-nav {
+    display: none;
+  }
+
+  /* Top Nav */
+  .mobile-top-nav {
+    display: block;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  .mobile-top-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mobile-top-nav .brand {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+  }
+  .nav-icons {
+    display: flex;
+    gap: 15px;
+  }
+  .nav-icons button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  /* Search dropdown */
+  .mobile-search {
+    display: none;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: #f9f9f9;
+  }
+  .mobile-search form {
+    display: flex;
+  }
+  .mobile-search input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .mobile-search button {
+    margin-left: 5px;
+    background: #ff4081;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+  }
+
+  /* Menu dropdown */
+  .mobile-menu {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #ddd;
+    background: #fff;
+  }
+  .mobile-menu li {
+    border-bottom: 1px solid #eee;
+  }
+  .mobile-menu li a {
+    display: block;
+    padding: 12px;
+    color: #333;
+    text-decoration: none;
+  }
+  .mobile-menu li a:hover {
+    background: #f5f5f5;
+  }
+
+  /* Bottom Nav */
+  .mobile-bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 5px 0;
+    z-index: 1000;
+  }
+  .mobile-bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    text-decoration: none;
+    color: #333;
+  }
+  .mobile-bottom-nav .nav-item i {
+    font-size: 18px;
+    margin-bottom: 3px;
+  }
+}
+
+/* Show mobile nav only on small screens */
+@media (max-width: 768px) {
+  .site-nav { /* your desktop nav class */
+    display: none;
+  }
+
+  .top-mobile-nav,
+  .bottom-mobile-nav {
+    display: flex;
+  }
+
+  .top-mobile-nav {
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+
+  .bottom-mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+    justify-content: space-around;
+    padding: 8px 0;
+    z-index: 1000;
+  }
+
+  .bottom-mobile-nav a {
+    text-align: center;
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+  }
+}
+
+/* Hide mobile navbar by default */
+.mobile-nav {
+  display: none;
+}
+
+/* Show mobile navbar only on small screens */
+@media screen and (max-width: 768px) {
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .brand {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+  }
+
+  .bottom-nav a {
+    text-decoration: none;
+    color: #555;
+    font-size: 14px;
+  }
+}
+
+/* --- FIX: clean mobile vs desktop nav visibility --- */
+
+/* Hide mobile navbars by default (desktop view) */
+.mobile-top-nav,
+.bottom-nav {
+  display: none;
+}
+
+/* Show them only on mobile screens */
+@media (max-width: 768px) {
+  /* Hide the desktop nav entirely */
+  .site-nav {
+    display: none;
+  }
+
+  /* Top mobile nav */
+  .mobile-top-nav {
+    display: block;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  /* Bottom mobile nav */
+  .bottom-nav {
+    display: flex;
+  }
+}
+
+/* Desktop search bar styling */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 25px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  position: relative;
+  z-index: 1000; /* ensures it's clickable */
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.search-bar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 16px;
+}
+
+.search-bar button:hover {
+  color: #000;
+}
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  color: #555;
+  font-size: 30px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.footer-social a:hover {
+  color: #ff3333;
+  transform: scale(1.2);
+}
+
+footer {
+  transform: translateY(30px);
+  opacity: 0;
+  transition: all 0.6s ease-out;
+}
+
+footer.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (max-width: 775px) {
+  .bottom-nav {
+    position: sticky;
+    bottom: 0;
+    top: auto;
+    margin-top: 20px; /* adds some gap above */
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- TOP MOBILE NAV -->
+<nav class="mobile-top-nav">
+  <div class="mobile-top-inner">
+    <!-- Brand -->
+    <a href="index.html" class="brand">KGS</a>
+
+    <!-- Icons -->
+    <div class="nav-icons">
+      <!-- Search -->
+      <button id="mobileSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <!-- Menu -->
+      <button id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+
+  <!-- Search dropdown -->
+  <div class="mobile-search" id="mobileSearch">
+    <form action="product.html" method="get">
+      <input type="text" name="q" placeholder="Search products…" />
+      <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+    </form>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <ul class="mobile-menu" id="mobileMenu">
+    <li><a href="product.html">Products</a></li>
+    <li><a href="sale.html">Gift Box</a></li>
+    <li><a href="new.html">New</a></li>
+    <li><a href="contact.html">About Us</a></li>
+  </ul>
+</nav>
+
+
+  <!-- TOP NAV -->
+  <nav class="site-nav" id="site-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">KGS</a>
+
+      <ul class="primary-nav" id="primaryNav">
+        <li><a href="index.html" class="is-active">Home</a></li>
+        <li><a href="product.html">Products</a></li>
+        <li><a href="new.html">New</a></li>
+        <li><a href="sale.html">Gift Box</a></li>
+        <li><a href="contact.html">About Us</a></li>
+      </ul>
+
+      <div class="utility">
+        <button class="icon-btn" id="searchToggle" aria-label="search"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <a href="login.html" class="icon-btn" title="Login"><i class="fa-regular fa-user"></i></a>
+        <a href="register.html" class="icon-btn" title="Register"><i class="fa-regular fa-id-badge"></i></a>
+        <a href="cart.html" class="icon-btn cart" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="badge" id="cart-count">0</span></a>
+        <button class="icon-btn hamburger" id="navToggle" aria-label="menu" title="Menu"><span style="display:block;width:18px;height:2px;background:var(--ink);margin:3px 0"></span></button>
+      </div>
+    </div>
+
+    <!-- slide-down search (kept simple) -->
+    <div class="nav-search" id="navSearch">
+      <form action="product.html" method="get" class="search-bar">
+  <input type="text" name="q" placeholder="Search products..." required>
+  <button type="submit"><i class="fa-solid fa-search"></i></button>
+</form>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Welcome to Kashanty Glams & Surprises</h1>
+      <p>Discover premium beauty products & exclusive gift boxes.</p>
+      <a href="product.html" style="background:#fff;color:#111;padding:10px 16px;border-radius:8px;font-weight:700">Shop Now</a>
+    </div>
+  </section>
+
+  <!-- SIMPLE FEATURE LIST -->
+  <section class="section">
+    <h2>Latest Products</h2>
+    <div class="products">
+      <a class="product" href="product.html">
+        <img src="lipgloss.jpg" alt="Lipgloss">
+        <div class="info"><h3>Lip Gloss</h3><p>High Shine</p><strong>₦1,500</strong></div>
+      </a>
+      <a class="product" href="product.html">
+        <img src="earing.jpg" alt="Earrings">
+        <div class="info"><h3>Earrings</h3><p>Stylish</p><strong>₦2,500</strong></div>
+      </a>
+      <a class="product" href="product.html">
+        <img src="keychain.jpg" alt="Keychain">
+        <div class="info"><h3>Keychain</h3><p>Perfect Gift</p><strong>₦2,500</strong></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- COLLECTIONS -->
+  <section class="section">
+    <h2>Shop by Category</h2>
+    <div class="collections" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px">
+      <a href="sale.html" class="product collection" style="text-align:center;padding:28px 20px">
+        <i class="fa-solid fa-gift" style="font-size:28px;color:var(--accent)"></i>
+        <h3>Gift Boxes</h3>
+      </a>
+      <a href="new.html" class="product collection" style="text-align:center;padding:28px 20px">
+        <i class="fa-solid fa-heart" style="font-size:28px;color:var(--accent)"></i>
+        <h3>New Arrivals</h3>
+      </a>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section newsletter" style="background:#111;color:#fff;">
+    <h2>Stay Updated</h2>
+    <p>Sign up for exclusive deals & new arrivals.</p>
+    <form style="max-width:520px;margin:12px auto 0;display:flex;gap:8px;">
+      <input type="email" placeholder="Your email address" style="flex:1;padding:10px;border-radius:6px;border:none" />
+      <button type="submit" style="padding:10px 14px;border-radius:6px;background:#fff;color:#111;border:none">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- STATS / FOOTER -->
+  <footer style="padding:30px 20px;text-align:center;background:#fff">
+    <div style="max-width:900px;margin:0 auto;display:flex;gap:18px;justify-content:center;flex-wrap:wrap">
+      <div style="min-width:120px">
+        <h3 style="margin:0;color:var(--accent)">100+</h3>
+        <p style="margin:6px 0 0;color:var(--muted)">Orders</p>
+      </div>
+      <div style="min-width:120px">
+        <h3 style="margin:0;color:var(--accent)">250+</h3>
+        <p style="margin:6px 0 0;color:var(--muted)">Happy Customers</p>
+      </div>
+      <div style="min-width:120px">
+        <h3 style="margin:0;color:var(--accent)">50+</h3>
+        <p style="margin:6px 0 0;color:var(--muted)">Products</p>
+      </div>
+    </div>
+    <p style="color:var(--muted);margin-top:18px">© KGS STORE</p>
+    <div class="footer-social">
+  <a href="https://wa.me/2347086445140" target="_blank"><i class="fab fa-whatsapp"></i></a>
+  <a href="https://www.instagram.com/kashanty_glams_surprises_kgs?igsh=MXFvZnZoZm9qZDl0MQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+  <a href="https://www.facebook.com/share/1EzKHHWgAT/" target="_blank"><i class="fab fa-facebook"></i></a>
+</div>
+
+  </footer>
+
+  <!-- ========== MOBILE BOTTOM NAV ========== -->
+  <nav class="bottom-nav" aria-hidden="false">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Shop</span></a>
+    <a href="#" id="categoryBtn" class="nav-item"><i class="fa-solid fa-th"></i><span>Categories</span></a>
+    <a href="#" id="accountBtn" class="nav-item"><i class="fa-regular fa-user"></i><span>Account</span></a>
+    <a href="cart.html" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>Cart</span></a>
+  </nav>
+
+  <!-- Category Drawer -->
+  <div class="category-drawer" id="categoryDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <h3>Shop by Category</h3>
+      <button id="closeCategory" class="close-btn" aria-label="Close drawer">&times;</button>
+    </div>
+    <hr />
+    <ul>
+      <li><a href="product.html"><i class="fa-solid fa-list"></i>All Products</a></li>
+      <li><a href="product.html?q=Necklace"><i class="fa-solid fa-gem"></i>Necklace</a></li>
+      <li><a href="product.html?q=Earring"><i class="fa-solid fa-ring"></i>Earring</a></li>
+      <li><a href="product.html?q=Bracelet"><i class="fa-solid fa-link"></i>Bracelet</a></li>
+      <li><a href="product.html?q=Arm Candy"><i class="fa-solid fa-swatchbook"></i>Arm Candy</a></li>
+      <li><a href="product.html?q=Lipgloss"><i class="fa-solid fa-droplet"></i>Lipgloss</a></li>
+      <li><a href="product.html?q=Lipliner"><i class="fa-solid fa-pen"></i>Lipliner</a></li>
+      <li><a href="product.html?q=Keychain"><i class="fa-solid fa-key"></i>Keychain</a></li>
+      <li><a href="sale.html"><i class="fa-solid fa-gift"></i>Gift Boxes</a></li>
+      <li><a href="new.html"><i class="fa-solid fa-heart"></i>New Arrivals</a></li>
+    </ul>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // ====== CATEGORY DRAWER (BOTTOM NAV) ======
+  const categoryBtn = document.getElementById("categoryBtn");
+  const drawer = document.getElementById("categoryDrawer");
+  const closeBtn = document.getElementById("closeCategory");
+  const overlay = document.getElementById("overlay");
+  const body = document.body;
+
+  function openDrawer() {
+    drawer.classList.add("active");
+    overlay.classList.add("active");
+    drawer.setAttribute("aria-hidden", "false");
+    overlay.setAttribute("aria-hidden", "false");
+    body.classList.add("drawer-open");
+  }
+  function closeDrawer() {
+    drawer.classList.remove("active");
+    overlay.classList.remove("active");
+    drawer.setAttribute("aria-hidden", "true");
+    overlay.setAttribute("aria-hidden", "true");
+    body.classList.remove("drawer-open");
+  }
+
+  categoryBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    openDrawer();
+  });
+  closeBtn?.addEventListener("click", closeDrawer);
+  overlay?.addEventListener("click", closeDrawer);
+  window.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") closeDrawer();
+  });
+
+  // ====== ACCOUNT BTN ======
+  const accountBtn = document.getElementById("accountBtn");
+  accountBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = "login.html";
+  });
+
+  // ====== MOBILE NAV (TOP) ======
+  const searchBtn = document.getElementById("mobileSearchBtn");
+  const searchBox = document.getElementById("mobileSearch");
+  const menuBtn = document.getElementById("mobileMenuBtn");
+  const menu = document.getElementById("mobileMenu");
+
+  searchBtn?.addEventListener("click", () => {
+    searchBox.style.display =
+      searchBox.style.display === "block" ? "none" : "block";
+    menu.style.display = "none";
+  });
+
+  menuBtn?.addEventListener("click", () => {
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+    searchBox.style.display = "none";
+  });
+
+  // ====== DESKTOP SEARCH TOGGLE ======
+  const searchToggle = document.getElementById("searchToggle");
+  const navSearch = document.getElementById("navSearch");
+
+  if (searchToggle && navSearch) {
+    searchToggle.addEventListener("click", () => {
+      navSearch.style.display =
+        navSearch.style.display === "block" ? "none" : "block";
+    });
+  }
+});
+</script>
+  </script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const footer = document.querySelector("footer");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        footer.classList.add("visible");
+      }
+    });
+  });
+  observer.observe(footer);
+});
+</script>
+
+</body>
+</html>

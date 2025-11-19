@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us | KGS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    /* ===== GENERAL STYLES ===== */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: #fafafa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #fff;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header .brand {
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: #111;
+      text-decoration: none;
+    }
+
+    header a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    header i {
+      font-size: 1.3rem;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      background: linear-gradient(135deg, #f3e7ff, #fff);
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #111;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: #555;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ===== ABOUT CONTENT ===== */
+    .about-container {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .about-container img {
+      flex: 1;
+      min-width: 280px;
+      border-radius: 12px;
+      object-fit: cover;
+      width: 100%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .about-text {
+      flex: 1.2;
+      min-width: 300px;
+    }
+
+    .about-text h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .about-text p {
+      margin-bottom: 15px;
+      color: #555;
+    }
+
+    .mission {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      margin: 40px auto;
+      max-width: 900px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .mission h3 {
+      font-size: 1.3rem;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    .mission p {
+      color: #666;
+    }
+
+    /* ===== TEAM SECTION ===== */
+    .team {
+      text-align: center;
+      padding: 60px 20px;
+      background: #fdfdfd;
+    }
+
+    .team h2 {
+      font-size: 1.6rem;
+      margin-bottom: 30px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .team-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .team-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .team-card h4 {
+      margin: 5px 0;
+      font-size: 1rem;
+    }
+
+    .team-card p {
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* ===== MOBILE NAV ===== */
+    .mobile-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 0;
+      z-index: 1000;
+    }
+
+    .mobile-bottom-nav a {
+      text-decoration: none;
+      color: #444;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .mobile-bottom-nav i {
+      font-size: 1.3rem;
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 768px) {
+      .about-container {
+        flex-direction: column;
+      }
+      header { justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="index.html"><i class="fa-solid fa-arrow-left"></i></a>
+    <a href="index.html" class="brand">KGS</a>
+    <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <h1>About KGS</h1>
+    <p>We’re passionate about redefining self-care and accessories — bringing elegance, quality, and creativity into your everyday life.</p>
+  </section>
+
+  <!-- ABOUT INFO -->
+  <section class="about-container">
+    <img src="kgs.jpg" alt="About KGS">
+    <div class="about-text">
+      <h2>Who We Are</h2>
+      <p>
+        Founded with a vision to create premium lifestyle products, KGS blends craftsmanship, affordability, and trend-driven design to help you express your best self.
+      </p>
+      <p>
+        From our humble beginnings, we’ve grown into a trusted brand for skincare, accessories, and everyday essentials — always putting our customers first.
+      </p>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <div class="mission">
+    <h3>Our Mission</h3>
+    <p>
+      To inspire confidence and comfort by providing high-quality, accessible products that enhance daily living.  
+      We believe beauty and care should be simple, sustainable, and empowering.
+    </p>
+  </div>
+
+  <!-- TEAM -->
+  <section class="team">
+    <h2>Meet Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <img src="ceo.jpg" alt="CEO">
+        <h4>Clinton Jackson</h4>
+        <p>Founder & CEO</p>
+      </div>
+      <div class="team-card">
+        <img src="team2.jpg" alt="Marketing Lead">
+        <h4>Sarah James</h4>
+        <p>Marketing Lead</p>
+      </div>
+      <div class="team-card">
+        <img src="team3.jpg" alt="Creative Director">
+        <h4>Alex Moore</h4>
+        <p>Creative Director</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="product.html"><i class="fa-solid fa-th"></i><span>Shop</span></a>
+    <a href="about.html"><i class="fa-solid fa-info-circle"></i><span>About</span></a>
+    <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i><span>Cart</span></a>
+  </nav>
+
+</body>
+</html>

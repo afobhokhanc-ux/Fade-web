@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Arrivals - KGS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+    }
+
+    /* Desktop Header */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header .brand {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    header .search-bar {
+      flex: 1;
+      margin: 0 15px;
+    }
+    header .search-bar input {
+      width: 85%;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      outline: none;
+    }
+    header .icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    header .icons a {
+      color: #333;
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    /* Layout */
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 20px auto;
+      gap: 20px;
+      padding: 0 15px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      height: fit-content;
+    }
+    .sidebar h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar ul li {
+      margin-bottom: 8px;
+    }
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+    }
+
+    /* Product Section */
+    .products-section {
+      flex: 1;
+    }
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .products-header h2 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .sort-dropdown select {
+      padding: 6px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .product-card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(90, 33, 128, 0.1);
+    }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .product-card h4 {
+      font-size: 14px;
+      margin: 10px 0 5px;
+      padding: 0 10px;
+      color: #333;
+    }
+    .product-card p {
+      font-size: 14px;
+      color: #555;
+      margin: 5px 0;
+    }
+    .product-card button {
+      margin: 10px 0;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 20px;
+      background: #111;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .product-card button:hover {
+      background: #333;
+    }
+
+    /* --- Mobile Nav --- */
+    .mobile-top-nav,
+    .bottom-nav {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      header { display: none; }
+
+      .mobile-top-nav {
+        display: block;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .mobile-top-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .mobile-top-nav .brand {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+      }
+      .nav-icons {
+        display: flex;
+        gap: 15px;
+      }
+      .nav-icons button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      /* Bottom Nav */
+      .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: #fff;
+        border-top: 1px solid #ddd;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        padding: 5px 0;
+        z-index: 1000;
+      }
+      .bottom-nav .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 12px;
+        text-decoration: none;
+        color: #333;
+      }
+      .bottom-nav .nav-item i {
+        font-size: 18px;
+        margin-bottom: 3px;
+      }
+
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+
+    /* Drawer and overlay */
+    .category-drawer {
+      position: fixed;top: 0;left: 0;width: 300px;height: 100vh;
+      background: #fff;box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+      transform: translateX(-100%);transition: transform 0.3s ease;
+      z-index: 2000;padding: 20px;
+    }
+    .category-drawer.active { transform: translateX(0); }
+    .category-drawer .close-btn {background:none;border:none;font-size:20px;float:right;cursor:pointer}
+    .category-drawer ul {list-style:none;padding:0;margin-top:30px}
+    .category-drawer li {margin-bottom:12px}
+    .category-drawer a {text-decoration:none;color:#333;font-weight:600;display:flex;align-items:center;gap:10px}
+
+    .overlay {
+      position: fixed;inset:0;background:rgba(0,0,0,0.45);
+      opacity:0;pointer-events:none;transition:opacity .25s;z-index:1900;
+    }
+    .overlay.active {opacity:1;pointer-events:auto;}
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Mobile Top Nav -->
+  <nav class="mobile-top-nav">
+    <div class="mobile-top-inner">
+      <a href="index.html" class="brand">KGS</a>
+      <div class="nav-icons">
+        <button id="mobileSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+
+    <div class="mobile-search" id="mobileSearch" style="display:none;padding:10px;border-top:1px solid #ddd;background:#f9f9f9">
+      <form action="product.html" method="get" style="display:flex;">
+        <input type="text" name="q" placeholder="Search products…" style="flex:1;padding:8px;border:1px solid #ccc;border-radius:4px;">
+        <button type="submit" style="margin-left:5px;background:#111;color:#fff;border:none;padding:8px 12px;border-radius:4px;"><i class="fa-solid fa-arrow-right"></i></button>
+      </form>
+    </div>
+
+    <ul class="mobile-menu" id="mobileMenu" style="display:none;list-style:none;margin:0;padding:0;border-top:1px solid #ddd;background:#fff;">
+      <li><a href="product.html" style="display:block;padding:12px;">Products</a></li>
+      <li><a href="sale.html" style="display:block;padding:12px;">Gift Box</a></li>
+      <li><a href="new.html" style="display:block;padding:12px;">New Arrivals</a></li>
+      <li><a href="contact.html" style="display:block;padding:12px;">About Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ Desktop Header -->
+  <header>
+    <span class="brand">KGS</span>
+    <div class="search-bar"><input type="text" placeholder="Search new arrivals..."/></div>
+    <div class="icons"><a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a></div>
+  </header>
+
+
+    <div class="products-section">
+      <div class="products-header">
+        <h2>✨ New Arrivals</h2>
+        <div class="sort-dropdown">
+          <select>
+            <option value="latest">Sort by: Latest</option>
+            <option value="priceLow">Price: Low to High</option>
+            <option value="priceHigh">Price: High to Low</option>
+            <option value="popular">Most Popular</option>
+          </select>
+        </div>
+      </div>
+
+      <section class="products-section">
+        <div class="product-grid">
+          <div class="product-card">
+            <img src="new1.jpg" alt="Silk Scarf">
+            <h4>Silk Scarf</h4>
+            <p>₦3,500</p>
+            <button>Add to Cart</button>
+          </div>
+
+          <div class="product-card">
+            <img src="new2.jpg" alt="Luxury Perfume">
+            <h4>Luxury Perfume</h4>
+            <p>₦8,000</p>
+            <button>Add to Cart</button>
+          </div>
+
+          <div class="product-card">
+            <img src="new3.jpg" alt="Handmade Necklace">
+            <h4>Handmade Necklace</h4>
+            <p>₦5,200</p>
+            <button>Add to Cart</button>
+          </div>
+
+          <div class="product-card">
+            <img src="new4.jpg" alt="Designer Lip Gloss">
+            <h4>Designer Lip Gloss</h4>
+            <p>₦2,800</p>
+            <button>Add to Cart</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ✅ Mobile Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Shop</span></a>
+    <a href="#" id="categoryBtn" class="nav-item"><i class="fa-solid fa-th"></i><span>Categories</span></a>
+    <a href="#" id="accountBtn" class="nav-item"><i class="fa-regular fa-user"></i><span>Account</span></a>
+    <a href="cart.html" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>Cart</span></a>
+  </nav>
+
+  <!-- ✅ CATEGORY DRAWER -->
+  <div class="category-drawer" id="categoryDrawer">
+    <button id="closeCategory" class="close-btn">&times;</button>
+    <h3>Shop by Category</h3>
+    <ul>
+      <li><a href="product.html"><i class="fa-solid fa-list"></i>All Products</a></li>
+      <li><a href="new.html"><i class="fa-solid fa-heart"></i>New Arrivals</a></li>
+      <li><a href="sale.html"><i class="fa-solid fa-gift"></i>Gift Boxes</a></li>
+      <li><a href="#"><i class="fa-solid fa-gem"></i>Accessories</a></li>
+      <li><a href="#"><i class="fa-solid fa-ring"></i>Jewelry</a></li>
+    </ul>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- ✅ Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const categoryBtn = document.getElementById('categoryBtn');
+      const drawer = document.getElementById('categoryDrawer');
+      const closeBtn = document.getElementById('closeCategory');
+      const overlay = document.getElementById('overlay');
+      const accountBtn = document.getElementById('accountBtn');
+      const body = document.body;
+
+      function openDrawer() {
+        drawer.classList.add('active');
+        overlay.classList.add('active');
+        body.classList.add('drawer-open');
+      }
+      function closeDrawer() {
+        drawer.classList.remove('active');
+        overlay.classList.remove('active');
+        body.classList.remove('drawer-open');
+      }
+
+      categoryBtn?.addEventListener('click', (e) => { e.preventDefault(); openDrawer(); });
+      closeBtn?.addEventListener('click', closeDrawer);
+      overlay?.addEventListener('click', closeDrawer);
+
+      accountBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = 'login.html';
+      });
+
+      // Mobile search toggle
+      const searchBtn = document.getElementById("mobileSearchBtn");
+      const searchBox = document.getElementById("mobileSearch");
+      const menuBtn = document.getElementById("mobileMenuBtn");
+      const menu = document.getElementById("mobileMenu");
+
+      searchBtn.addEventListener("click", () => {
+        searchBox.style.display = searchBox.style.display === "block" ? "none" : "block";
+        menu.style.display = "none";
+      });
+
+      menuBtn.addEventListener("click", () => {
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+        searchBox.style.display = "none";
+      });
+    });
+    
+  </script>
+
+</body>
+</html>

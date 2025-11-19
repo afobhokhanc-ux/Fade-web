@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gift Boxes — KGS</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --bg:#fdf2e9;
+      --card:#fff;
+      --ink:#111;
+      --muted:#6b7280;
+      --accent:#a38686;
+      --radius:12px;
+      --max-width:1200px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+    a{color:inherit;text-decoration:none}
+
+    /* header */
+    header{display:flex;align-items:center;gap:12px;padding:14px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.06);position:sticky;top:0;z-index:1100}
+    .brand{font-weight:700;font-size:1.05rem}
+    .hero-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
+    .icon-btn{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;border:none;background:transparent;cursor:pointer}
+
+    /* hero */
+    .hero{max-width:var(--max-width);margin:28px auto 10px;padding:28px 20px;border-radius:14px;background:linear-gradient(180deg, rgba(163,134,134,0.06), rgba(255,255,255,0.6));box-shadow:0 8px 30px rgba(0,0,0,0.04);display:flex;gap:20px;align-items:center}
+    .hero .left{flex:1}
+    .hero h1{margin:0 0 8px;font-size:1.8rem}
+    .hero p{margin:0 0 12px;color:var(--muted)}
+    .btn{background:var(--ink);color:#fff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+    .btn.secondary{background:#fff;color:var(--ink);border:1px solid rgba(0,0,0,0.06)}
+
+    /* layout */
+    .wrap{max-width:var(--max-width);margin:18px auto;padding:0 18px}
+    .filters-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+    .search-inline{display:flex;gap:8px;align-items:center}
+    .search-inline input{padding:8px 12px;border-radius:999px;border:1px solid #e6e6e6;width:260px}
+
+    /* grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+    .card{background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(0,0,0,0.04);transition:transform .28s,box-shadow .28s;display:flex;flex-direction:column;min-height:320px}
+    .card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,0.08)}
+    .media{height:180px;background:#fafafa;display:flex;align-items:center;justify-content:center}
+    .media img{width:100%;height:100%;object-fit:cover}
+    .body{padding:14px;flex:1;display:flex;flex-direction:column}
+    .price{font-weight:700;margin-top:auto}
+    .controls{display:flex;gap:8px;margin-top:12px}
+
+    /* modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:3000;padding:20px}
+    .panel{width:100%;max-width:760px;border-radius:14px;background:#fff;padding:18px;position:relative;animation:modalIn .24s ease}
+    @keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
+    .close{position:absolute;right:14px;top:10px;border:none;background:none;font-size:20px;cursor:pointer}
+    .panel .row{display:flex;gap:16px;align-items:flex-start}
+    .panel .img{flex:0 0 320px}
+    .panel .img img{width:100%;height:320px;object-fit:cover;border-radius:8px}
+    .details{flex:1}
+    .items-list{margin:10px 0;padding-left:18px;color:var(--muted)}
+
+    /* swatches/qty */
+    .swatches{display:flex;gap:8px;margin:12px 0}
+    .swatches button{width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer}
+    .inline-row{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .qty{display:flex;align-items:center;border-radius:8px;border:1px solid #eee;overflow:hidden}
+    .qty button{padding:8px 10px;border:none;background:#fafafa;cursor:pointer}
+    .qty input{width:50px;text-align:center;border:none;padding:8px}
+
+    /* confetti pieces */
+    .confetti-piece{position:fixed;z-index:4000;pointer-events:none;opacity:0;animation:confetti 900ms forwards}
+    @keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(-520px) rotate(720deg);opacity:0}}
+
+    /* unbox animation */
+    .unbox {
+      animation:unboxOpen .5s ease forwards;
+      transform-origin: 50% 0;
+    }
+    @keyframes unboxOpen {
+      0% { transform: scale(.96) translateY(6px); opacity:0 }
+      40% { transform: scale(1.02) translateY(-6px); opacity:1 }
+      100% { transform: scale(1) translateY(0); opacity:1 }
+    }
+
+    /* footer */
+    footer{max-width:var(--max-width);margin:30px auto;padding:18px;text-align:center;color:var(--muted)}
+
+    /* responsive */
+    @media (max-width:900px){
+      .hero{flex-direction:column;align-items:flex-start}
+      .panel .row{flex-direction:column}
+      .panel .img{width:100%}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- header -->
+  <header>
+    <a href="index.html" class="brand">KGS</a>
+
+    <!-- keep a Home button and cart icon to match your site -->
+    <nav class="hero-cta" aria-label="top actions">
+      <a href="index.html" class="btn secondary" title="Home"><i class="fa-solid fa-house"></i>&nbsp;Home</a>
+      <a href="cart.html" class="icon-btn" title="Cart" aria-label="cart"><i class="fa-solid fa-bag-shopping"></i></a>
+    </nav>
+  </header>
+
+  <!-- hero -->
+  <section class="hero" role="region" aria-label="Gift Boxes">
+    <div class="left">
+      <h1>Gift Boxes — Curated & Ready to Ship</h1>
+      <p>Preview, customize and add a personal message before purchasing. Tap any box to view its contents.</p>
+      <div class="actions">
+        <button class="btn" id="shopNow">Shop Gift Boxes</button>
+        <button class="btn secondary" id="howItWorks">How it works</button>
+      </div>
+    </div>
+    <div class="right" aria-hidden="true">
+      <img src="giftbox.jpg" alt="gift box" style="width:320px;height:180px;object-fit:cover;border-radius:10px">
+    </div>
+  </section>
+
+  <!-- controls + grid -->
+  <main class="wrap">
+    <div class="filters-row">
+      <h2>Our Gift Boxes</h2>
+      <div class="search-inline" role="search">
+        <input id="searchInput" placeholder="Search boxes (e.g. 'luxury', 'glow')" />
+        <select id="categoryFilter" aria-label="Filter by category"><option value="">All categories</option></select>
+      </div>
+    </div>
+
+    <div class="grid" id="grid" aria-live="polite"></div>
+  </main>
+
+  <!-- modal -->
+  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel unbox" role="document" aria-labelledby="modalTitle">
+      <button class="close" id="closeModal" aria-label="Close">&times;</button>
+      <div class="row">
+        <aside class="img"><img id="modalImg" src="" alt=""></aside>
+        <div class="details">
+          <h2 id="modalTitle"></h2>
+          <p id="modalTagline" style="color:var(--muted)"></p>
+
+          <div><strong>What's inside</strong>
+            <ul id="modalItems" class="items-list"></ul>
+          </div>
+
+          <div><strong>Box color</strong><div class="swatches" id="swatches"></div></div>
+
+          <div class="inline-row">
+            <div class="qty" aria-label="quantity selector">
+              <button id="qtyMinus">−</button>
+              <input id="qtyInput" value="1" type="number" min="1" />
+              <button id="qtyPlus">+</button>
+            </div>
+            <div style="flex:1">
+              <label style="display:block;font-size:12px;color:var(--muted)">Add a message (optional)</label>
+              <input id="giftMessage" placeholder="To: ... · From: ..." style="width:100%;padding:8px;border-radius:8px;border:1px solid #eee" />
+            </div>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+            <div style="font-weight:800;font-size:1.05rem" id="modalPrice"></div>
+            <button class="btn" id="addToCartBtn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Questions? <a href="https://instagram.com/your_handle" target="_blank">Instagram</a> · <a href="https://wa.me/00000000000" target="_blank">WhatsApp</a></p>
+    <p style="font-size:.9rem;color:var(--muted)">© KGS STORE</p>
+  </footer>
+
+  <script>
+  (function(){
+
+    /* ---------- Data loading: try JSON file first, then fallback ---------- */
+    async function loadBoxes(){
+      try{
+        const resp = await fetch('giftboxes.json', {cache: "no-store"});
+        if(!resp.ok) throw new Error('no json');
+        const data = await resp.json();
+        if(Array.isArray(data) && data.length) return data;
+        throw new Error('invalid json');
+      }catch(err){
+        // fallback inline
+        return [
+          { id:1, title:"Luxury Glow Box", tagline:"Premium picks for a radiant look", price:7500,
+            img:"giftbox.jpg",
+            items:["Gold-plated necklace","Arm candy bracelet","High-shine lipgloss"], categories:["Luxury","Makeup"] },
+          { id:2, title:"Sweetheart Combo", tagline:"Romantic set with a personal card", price:4200,
+            img:"https://source.unsplash.com/600x400/?romantic,gift",
+            items:["Heart charm keychain","Dainty earrings","Personal message card"], categories:["Romantic","Accessories"] },
+          { id:3, title:"Mini Joy Box", tagline:"Small but delightful — budget-friendly", price:1800,
+            img:"https://source.unsplash.com/600x400/?gift,small",
+            items:["Lipliner","Mini lipgloss","Keychain"], categories:["Budget","Makeup"] },
+          { id:4, title:"Pamper & Glow", tagline:"Self-care set for a relaxing evening", price:6200,
+            img:"https://source.unsplash.com/600x400/?selfcare,gift",
+            items:["Facemask","Lipgloss","Mini perfume"], categories:["Selfcare","Luxury"] }
+        ];
+      }
+    }
+
+    /* ---------- Helpers: cart ---------- */
+    function getCart(){ return JSON.parse(localStorage.getItem('cart') || '[]') }
+    function setCart(c){ localStorage.setItem('cart', JSON.stringify(c)) }
+    function updateCartBadge(){
+      // update any #cart-count on the page
+      const el = document.getElementById('cart-count');
+      if(el) el.textContent = getCart().length;
+    }
+
+    /* ---------- UI ---------- */
+    const grid = document.getElementById('grid');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalTagline = document.getElementById('modalTagline');
+    const modalItems = document.getElementById('modalItems');
+    const modalPrice = document.getElementById('modalPrice');
+    const swatchesEl = document.getElementById('swatches');
+    const qtyInput = document.getElementById('qtyInput');
+    const qtyPlus = document.getElementById('qtyPlus');
+    const qtyMinus = document.getElementById('qtyMinus');
+    const giftMessage = document.getElementById('giftMessage');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    const closeModalBtn = document.getElementById('closeModal');
+    const shopNow = document.getElementById('shopNow');
+    const howItWorks = document.getElementById('howItWorks');
+
+    const swatchColors = [
+      {name:"Rose", color:"#F8C6C6"},
+      {name:"Ivory", color:"#FFF7ED"},
+      {name:"Mint", color:"#DFF3EA"},
+      {name:"Midnight", color:"#111827"}
+    ];
+
+    let boxes = [];
+    let currentBox = null;
+    let chosenColor = swatchColors[0].color;
+
+    function formatPrice(n){ return `₦${Number(n).toLocaleString()}` }
+
+    function createCard(box){
+      const el = document.createElement('article');
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="media"><img loading="lazy" src="${box.img}" alt="${escapeHtml(box.title)}"></div>
+        <div class="body">
+          <h3>${escapeHtml(box.title)}</h3>
+          <p style="color:var(--muted)">${escapeHtml(box.tagline)}</p>
+          <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center">
+            <div class="price">${formatPrice(box.price)}</div>
+            <div class="controls">
+              <button class="btn view" data-id="${box.id}">View Contents</button>
+              <button class="btn secondary quick-add" data-id="${box.id}">Quick Add</button>
+            </div>
+          </div>
+        </div>
+      `;
+      el.querySelector('.view').addEventListener('click', ()=> openModal(box.id));
+      el.querySelector('.quick-add').addEventListener('click', ()=> quickAdd(box.id));
+      return el;
+    }
+
+    function renderGrid(list){
+      grid.innerHTML = '';
+      if(!list || !list.length){
+        grid.innerHTML = '<p style="grid-column:1/-1;color:var(--muted);text-align:center;padding:18px">No boxes found</p>';
+        return;
+      }
+      list.forEach(b => grid.appendChild(createCard(b)));
+    }
+
+    function populateCategories(){
+      const set = new Set();
+      boxes.forEach(b => (b.categories||[]).forEach(c => set.add(c)));
+      const arr = [...set].sort();
+      arr.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        categoryFilter.appendChild(opt);
+      });
+    }
+
+    function applyFilters(){
+      const q = (searchInput.value||'').trim().toLowerCase();
+      const cat = categoryFilter.value;
+      const result = boxes.filter(b => {
+        const byQ = !q || (b.title + ' ' + (b.tagline||'') + ' ' + (b.items||[]).join(' ')).toLowerCase().includes(q);
+        const byCat = !cat || (b.categories||[]).map(x=>x.toLowerCase()).includes(cat.toLowerCase());
+        return byQ && byCat;
+      });
+      renderGrid(result);
+    }
+
+    /* ---------- Modal logic ---------- */
+    function openModal(id){
+      const box = boxes.find(x => Number(x.id) === Number(id));
+      if(!box) return;
+      currentBox = box;
+      modalImg.src = box.img;
+      modalTitle.textContent = box.title;
+      modalTagline.textContent = box.tagline || '';
+      modalItems.innerHTML = (box.items||[]).map(it => `<li>${escapeHtml(it)}</li>`).join('');
+      modalPrice.textContent = formatPrice(box.price);
+      qtyInput.value = 1;
+      giftMessage.value = '';
+      chosenColor = swatchColors[0].color;
+      renderSwatches();
+      // show modal
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      // add small unbox animation class to .panel
+      const panel = modal.querySelector('.panel');
+      if(panel){
+        panel.classList.remove('unbox');
+        void panel.offsetWidth;
+        panel.classList.add('unbox');
+      }
+      // focus add button
+      addToCartBtn.focus();
+    }
+
+    function closeModal(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    function renderSwatches(){
+      swatchesEl.innerHTML = '';
+      swatchColors.forEach(s=>{
+        const btn = document.createElement('button');
+        btn.title = s.name;
+        btn.style.background = s.color;
+        btn.addEventListener('click', ()=> {
+          chosenColor = s.color;
+          swatchesEl.querySelectorAll('button').forEach(x => x.style.outline = 'none');
+          btn.style.outline = '3px solid rgba(0,0,0,0.08)';
+        });
+        swatchesEl.appendChild(btn);
+      });
+      const first = swatchesEl.querySelector('button'); if(first) first.style.outline = '3px solid rgba(0,0,0,0.08)';
+    }
+
+    qtyPlus.addEventListener('click', ()=> qtyInput.value = Math.max(1, Number(qtyInput.value)+1));
+    qtyMinus.addEventListener('click', ()=> qtyInput.value = Math.max(1, Number(qtyInput.value)-1));
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+
+    addToCartBtn.addEventListener('click', ()=> {
+      if(!currentBox) return;
+      const qty = Math.max(1, Number(qtyInput.value) || 1);
+      const message = (giftMessage.value || '').trim();
+      const cart = getCart();
+      cart.push({
+        id: currentBox.id,
+        title: currentBox.title,
+        price: currentBox.price,
+        qty, color: chosenColor, message, img: currentBox.img
+      });
+      setCart(cart);
+      updateCartBadge();
+      showConfetti();
+      addToCartBtn.textContent = 'Added ✓';
+      setTimeout(()=> addToCartBtn.textContent = 'Add to Cart', 900);
+    });
+
+    function quickAdd(id){
+      const box = boxes.find(x => Number(x.id) === Number(id));
+      if(!box) return;
+      const cart = getCart();
+      cart.push({ id:box.id, title:box.title, price:box.price, qty:1, color:swatchColors[0].color, img:box.img });
+      setCart(cart);
+      updateCartBadge();
+      showConfetti();
+    }
+
+    /* ---------- small confetti ---------- */
+    function showConfetti(){
+      for(let i=0;i<20;i++){
+        const p = document.createElement('div');
+        p.className = 'confetti-piece';
+        document.body.appendChild(p);
+        const size = Math.random()*12 + 6;
+        p.style.width = size + 'px';
+        p.style.height = (size*0.6) + 'px';
+        p.style.left = (window.innerWidth/2 + (Math.random()*220-110)) + 'px';
+        p.style.top = (window.innerHeight - 120) + 'px';
+        p.style.background = ['#ffb4b4','#ffd8b4','#d7ffd8','#b4d8ff','#ffd8e6'][Math.floor(Math.random()*5)];
+        p.style.animationDuration = (900 + Math.random()*300) + 'ms';
+        setTimeout(()=> p.remove(), 1400);
+      }
+    }
+
+    /* ---------- Utilities ---------- */
+    function debounce(fn, delay=200){ let t; return function(...a){ clearTimeout(t); t=setTimeout(()=> fn.apply(this,a), delay) } }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]) }
+
+    /* ---------- Init ---------- */
+    (async function init(){
+      boxes = await loadBoxes();
+      populateCategories();
+      renderGrid(boxes);
+      updateCartBadge();
+
+      searchInput.addEventListener('input', debounce(applyFilters, 200));
+      categoryFilter.addEventListener('change', applyFilters);
+
+      // keyboard escape
+      window.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+      // shopnow smooth scroll
+      shopNow.addEventListener('click', ()=> grid.scrollIntoView({behavior:'smooth'}));
+      howItWorks.addEventListener('click', ()=> alert("Choose a box → View contents → Customize → Add to cart"));
+
+      // open by ?box=ID param if present
+      const params = new URLSearchParams(location.search);
+      const boxId = params.get('box');
+      if(boxId) setTimeout(()=> openModal(Number(boxId)), 250);
+    })();
+
+  })();
+  </script>
+</body>
+</html>

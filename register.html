@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - K.G.S</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    .error {
+      color: red;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .link a {
+      color: #28a745;
+      text-decoration: none;
+    }
+    .back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #111;
+  font-weight: 600;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  padding: 8px 15px;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, color 0.3s ease;
+  z-index: 1000;
+}
+
+.back-home i {
+  font-size: 16px;
+}
+
+.back-home:hover {
+  background: #111;
+  color: #fff;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Back to Home Button -->
+<a href="index.html" class="back-home">
+  <i class="fa-solid fa-arrow-left"></i> Home
+</a>
+
+  <div class="container">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <label>Email:</label>
+      <input type="email" id="registerEmail" required>
+      <small class="error" id="registerEmailError"></small>
+
+      <label>Password:</label>
+      <input type="password" id="registerPassword" required>
+      <small class="error" id="registerPasswordError"></small>
+
+      <label>Confirm Password:</label>
+      <input type="password" id="confirmPassword" required>
+      <small class="error" id="confirmPasswordError"></small>
+
+      <button type="submit">Register</button>
+    </form>
+    <div class="link">
+      <p>Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let email = document.getElementById("registerEmail").value;
+      let password = document.getElementById("registerPassword").value;
+      let confirm = document.getElementById("confirmPassword").value;
+      let valid = true;
+
+      document.getElementById("registerEmailError").innerText = "";
+      document.getElementById("registerPasswordError").innerText = "";
+      document.getElementById("confirmPasswordError").innerText = "";
+
+      if (!email.includes("@")) {
+        document.getElementById("registerEmailError").innerText = "Enter a valid email!";
+        valid = false;
+      }
+
+      if (password.length < 6) {
+        document.getElementById("registerPasswordError").innerText = "Password must be at least 6 characters!";
+        valid = false;
+      }
+
+      if (password !== confirm) {
+        document.getElementById("confirmPasswordError").innerText = "Passwords do not match!";
+        valid = false;
+      }
+
+      if (valid) {
+        alert("Registration successful! 🎉 (Demo only)");
+        window.location.href = "login.html"; // redirect to login
+      }
+    });
+  </script>
+</body>
+</html>

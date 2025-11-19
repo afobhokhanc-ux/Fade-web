@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Products - KGS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --nav-h:64px;
+      --bg:#fdf2e9;
+      --ink:#111;
+      --muted:#6b7280;
+      --accent:#a38686;
+      --drawer-width:300px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,system-ui,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+    a{color:inherit;text-decoration:none}
+
+    /* ===== Desktop Header ===== */
+    header.desktop-header{
+      display:flex;align-items:center;gap:12px;
+      padding:14px 20px;background:#fff;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+      position:sticky;top:0;z-index:1100;
+    }
+    .brand{font-weight:700;font-size:1.05rem}
+    .search-bar{flex:1;display:flex;align-items:center;gap:8px}
+    .search-bar input{
+      flex:1;padding:9px 12px;border-radius:999px;border:1px solid #e6e6e6;font-size:14px;
+    }
+    .search-bar button{
+      padding:9px 12px;border-radius:999px;border:none;background:var(--ink);color:#fff;cursor:pointer;
+    }
+    .header-icons{display:flex;gap:10px;align-items:center}
+    .icon-btn{width:40px;height:40px;display:grid;place-items:center;background:transparent;border:none;cursor:pointer}
+
+    /* ===== Layout ===== */
+    .page{display:flex;gap:20px;max-width:1200px;margin:22px auto;padding:0 16px;align-items:flex-start}
+    .sidebar{width:240px;background:#fff;padding:16px;border-radius:8px;border:1px solid #eee;}
+    .sidebar h3{margin:0 0 10px}
+    .sidebar ul{list-style:none;padding:0;margin:0}
+    .sidebar li{margin:8px 0}
+    .sidebar a{display:flex;gap:10px;align-items:center;color:#333;font-weight:600}
+
+    .products-wrap{flex:1}
+    .products-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+    .product-card{background:#fff;border-radius:10px;border:1px solid #eee;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;transition:transform .3s ease, opacity .3s ease}
+    .product-card img{width:100%;height:150px;object-fit:cover;transition:transform .2s}
+    .product-card img:hover{transform:scale(1.03)}
+    .product-card .info{padding:12px;width:100%}
+    .product-card h3{margin:6px 0;font-size:15px}
+    .product-card p{margin:0;color:var(--muted)}
+    .product-card .actions{margin-top:10px;padding-bottom:12px}
+    .product-card button{padding:8px 14px;border-radius:20px;border:none;background:var(--ink);color:#fff;cursor:pointer}
+
+    /* ===== Scroll Animation ===== */
+    html { scroll-behavior: smooth; }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-out;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== Product Preview Modal ===== */
+    .preview-modal{
+      position:fixed;inset:0;background:rgba(0,0,0,0.6);
+      display:none;align-items:center;justify-content:center;z-index:3000;
+    }
+    .preview-content{
+      background:#fff;border-radius:12px;max-width:380px;width:90%;padding:20px;text-align:center;position:relative;
+    }
+    .preview-content img{width:100%;height:220px;object-fit:cover;border-radius:8px}
+    .preview-content h3{margin:10px 0 6px}
+    .preview-content p{color:var(--muted)}
+    .close-preview{
+      position:absolute;top:10px;right:14px;border:none;background:none;font-size:22px;cursor:pointer;
+    }
+
+    /* ===== Category Drawer ===== */
+    .category-drawer{
+      position:fixed;top:0;left:0;width:var(--drawer-width);height:100vh;background:#fff;
+      box-shadow:6px 0 30px rgba(0,0,0,0.12);transform:translateX(-120%);transition:transform .32s;z-index:2000;
+      padding:18px;overflow:auto;
+    }
+    .category-drawer.active{transform:translateX(0)}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:1900}
+    .overlay.active{opacity:1;pointer-events:auto}
+
+    /* ===== Mobile Nav ===== */
+    .mobile-top-nav{display:none}
+    .bottom-nav{display:none}
+
+    @media(max-width:775px){
+      header.desktop-header{display:none}
+      .sidebar{display:none}
+      .page{margin-top:0;padding-bottom:80px}
+      .mobile-top-nav{
+        display:flex;flex-direction:column;position:sticky;top:0;background:#fff;
+        border-bottom:1px solid #eee;padding:10px 12px;z-index:1200;
+      }
+      .mobile-top-inner{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+      .mobile-search{display:flex;align-items:center;gap:6px;width:100%}
+      .mobile-search input{
+        flex:1;padding:10px 12px;border-radius:8px;border:1px solid #ccc;
+      }
+      .mobile-search button{
+        background:var(--ink);color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer;
+      }
+
+      .bottom-nav{
+        display:flex;position:fixed;left:0;right:0;bottom:0;height:80px;
+        background:#fff;border-top:1px solid #eee;align-items:center;justify-content:space-around;z-index:1200;
+      }
+      .bottom-nav .nav-item{display:flex;flex-direction:column;align-items:center;font-size:13px;color:#333}
+    }
+  </style>
+</head>
+<body>
+   <!-- Mobile top nav -->
+  <nav class="mobile-top-nav">
+    <div class="mobile-top-inner">
+      <a href="index.html" class="brand">KGS</a>
+      <a href="cart.html" class="icon-btn"><i class="fa-solid fa-bag-shopping"></i></a>
+    </div>
+    <form id="mobileSearchForm" class="mobile-search">
+      <input name="q" type="search" placeholder="Search products…" />
+      <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+    </form>
+  </nav>
+
+ <header class="desktop-header">
+  <a href="index.html" class="icon-btn" title="Home">
+    <i class="fa-solid fa-arrow-left"></i>
+  </a>
+  <div class="brand">KGS</div>
+  <form id="desktopSearchForm" class="search-bar">
+    <input name="q" id="desktopSearchInput" type="search" placeholder="Search products..." />
+    <button type="submit"><i class="fa-solid fa-search"></i></button>
+  </form>
+  <div class="header-icons">
+    <a href="cart.html" class="icon-btn"><i class="fa-solid fa-bag-shopping"></i>
+      <span id="cart-count" style="font-size:11px;background:var(--ink);color:#fff;border-radius:999px;padding:2px 6px;margin-left:4px">0</span>
+    </a>
+  </div>
+</header>
+
+
+  <!-- Sidebar + Products -->
+  <div class="page">
+    <aside class="sidebar">
+  <h3>Categories</h3>
+  <ul>
+    <li><a href="product.html?q=All">All</a></li>
+    <li><a href="product.html?q=Necklace">Necklace</a></li>
+    <li><a href="product.html?q=Earring">Earring</a></li>
+    <li><a href="product.html?q=Bracelet">Bracelet</a></li>
+    <li><a href="product.html?q=Arm Candy">Arm Candy</a></li>
+    <li><a href="product.html?q=Lipliner">Lipliner</a></li>
+    <li><a href="product.html?q=Lipgloss">Lipgloss</a></li>
+    <li><a href="product.html?q=Keychain">Keychain</a></li>
+    <li><a href="product.html?q=Claw Clip">Claw Clip</a></li>
+  </ul>
+</aside>
+
+    <main class="products-wrap">
+      <div class="products-header">
+        <h2 id="productsTitle">All Products</h2>
+        <select id="sortSelect">
+          <option value="latest">Sort by: Latest</option>
+          <option value="priceLow">Price: Low to High</option>
+          <option value="priceHigh">Price: High to Low</option>
+        </select>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </main>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Shop</span></a>
+    <a href="#" id="categoryBtn" class="nav-item"><i class="fa-solid fa-th"></i><span>Categories</span></a>
+    <a href="login.html" class="nav-item"><i class="fa-regular fa-user"></i><span>Account</span></a>
+    <a href="cart.html" class="nav-item"><i class="fa-solid fa-bag-shopping"></i><span>Cart</span></a>
+  </nav>
+
+  <!-- Product preview modal -->
+  <div class="preview-modal" id="previewModal">
+    <div class="preview-content">
+      <button class="close-preview" id="closePreview">&times;</button>
+      <img id="previewImg" src="" alt="">
+      <h3 id="previewName"></h3>
+      <p id="previewDesc"></p>
+      <p id="previewPrice"></p>
+      <button id="previewAddCart">Add to Cart</button>
+    </div>
+  </div>
+
+  <!-- Category Drawer -->
+<div class="category-drawer" id="categoryDrawer">
+  <div class="drawer-header">
+    <h3>Categories</h3>
+    <button id="closeDrawerBtn">&times;</button>
+  </div>
+  <ul>
+    <li>All</li>
+    <li>Necklace</li>
+    <li>Earring</li>
+    <li>Bracelet</li>
+    <li>Arm Candy</li>
+    <li>Lipliner</li>
+    <li>Lipgloss</li>
+    <li>Keychain</li>
+  </ul>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const drawer = document.getElementById("categoryDrawer");
+  const drawerBtn = document.getElementById("categoryBtn");
+  const closeDrawerBtn = document.getElementById("closeDrawerBtn");
+  const drawerItems = drawer.querySelectorAll("li");
+  const sidebarLinks = document.querySelectorAll(".sidebar a");
+  const productsTitle = document.getElementById("productsTitle");
+
+  // === Open / Close Drawer (Mobile) ===
+  if (drawerBtn) {
+    drawerBtn.addEventListener("click", e => {
+      e.preventDefault();
+      drawer.classList.add("active");
+    });
+  }
+  if (closeDrawerBtn) {
+    closeDrawerBtn.addEventListener("click", () => drawer.classList.remove("active"));
+  }
+
+  // === Shared Filter Function ===
+  function filterByCategory(category) {
+    const filtered = category === "All"
+      ? products
+      : products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+    productsTitle.textContent = category === "All" ? "All Products" : `${category}s`;
+    renderProducts(filtered);
+  }
+
+  // === Mobile Drawer Categories ===
+  drawerItems.forEach(item => {
+    item.addEventListener("click", () => {
+      const category = item.textContent.trim();
+      filterByCategory(category);
+      drawer.classList.remove("active");
+    });
+  });
+
+  // === Desktop Sidebar Categories ===
+  sidebarLinks.forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const url = new URL(link.href);
+      const category = url.searchParams.get("q") || "All";
+      filterByCategory(category);
+    });
+  });
+
+  // === Handle ?q= Parameter on Page Load ===
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get("q");
+  if (q) filterByCategory(q);
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const categoryBtn = document.getElementById("categoryBtn");
+  const categoryDrawer = document.getElementById("categoryDrawer");
+  const closeDrawerBtn = document.getElementById("closeDrawerBtn");
+
+  if (categoryBtn && categoryDrawer && closeDrawerBtn) {
+    categoryBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      categoryDrawer.classList.add("active");
+    });
+
+    closeDrawerBtn.addEventListener("click", () => {
+      categoryDrawer.classList.remove("active");
+    });
+
+    // Optional: close when tapping outside drawer
+    document.addEventListener("click", (e) => {
+      if (
+        !categoryDrawer.contains(e.target) &&
+        !categoryBtn.contains(e.target)
+      ) {
+        categoryDrawer.classList.remove("active");
+      }
+    });
+  }
+});
+</script>
+
+  <script>
+    const products = [
+  { id:1, name:"Facemask", price:500, category:"Facemask", image:"face.jpg", description:"Soft and comfortable for the face." },
+  { id:2, name:"Facemask", price:500, category:"Facemask", image:"fm.jpg", description:"Soft and smooth feeling." },
+  { id:3, name:"Necklace Elegant", price:2500, category:"Necklace", image:"necklace.jpg", description:"Gold-plated necklace." },
+  { id:4, name:"Earrings Cute", price:2500, category:"Earring", image:"earing.jpg", description:"Stylish hoop earrings." },
+  { id:5, name:"Bracelet Charm", price:4500, category:"Bracelet", image:"charm bracelet.jpg", description:"Beaded charm bracelet." },
+  { id:6, name:"Lipgloss Shine", price:1500, category:"Lipgloss", image:"lipgloss.jpg", description:"High-shine lipgloss." },
+  { id:7, name:"Lipliner Smooth", price:500, category:"Lipliner", image:"lipliner.jpg", description:"Long-lasting lipliner." },
+  { id:8, name:"Keychain Cute", price:2500, category:"Keychain", image:"keychain.jpg", description:"Gift-ready keychain." },
+  { id:9, name:"Floral Claw", price:2000, category:"Claw Clip", image:"Floral claw clip.jpg", description:"Easy to use head clip." },
+  { id:10, name:"Claw", price:2000, category:"Claw Clip", image:"claw.jpg", description:"Easy to use head clip." },
+  { id:11, name:"Arm Candy", price:3500, category:"Arm Candy", image:"arm candy.jpg", description:"Stylish arm candy that elevate any outfit." },
+  { id:12, name:"Claw Clip", price:2000, category:"Claw Clip", image:"clip.jpg", description:"BRB." },
+  { id:13, name:"Floral Claw Clip", price:2500, category:"Claw Clip", image:"flo clip.jpg", description:"BRB." },
+  { id:14, name:"Dainty Necklace Gold", price:3500, category:"Necklace", image:"density necklace.jpg", description:"BRB." },
+  { id:15, name:"Dainty Necklace", price:3500, category:"Necklace", image:"dainty2.jpg", description:"BRB." },
+  { id:16, name:"Peel off Lipgloss", price:2500, category:"Lipgloss", image:"lipgloss remove.jpg", description:"BRB." },
+  { id:17, name:"Floral Earring", price:2500, category:"Earring", image:"floral earring.jpg", description:"BRB." },
+  { id:18, name:"Acrylic Earring", price:1000, category:"Earring", image:"earri ng.jpg", description:"BRB." },
+  { id:19, name:"Lipliner", price:500, category:"Lipliner", image:"2lip.jpg", description:"BRB." },
+  { id:20, name:"Peel off Lipgloss", price:2500, category:"Lipgloss", image:"lipliner remover2.jpg", description:"BRB." },
+
+
+
+
+
+
+];
+
+    const productGrid=document.getElementById('productGrid');
+    const modal=document.getElementById('previewModal');
+    const img=document.getElementById('previewImg');
+    const nameEl=document.getElementById('previewName');
+    const desc=document.getElementById('previewDesc');
+    const price=document.getElementById('previewPrice');
+    const closeBtn=document.getElementById('closePreview');
+    const addCartBtn=document.getElementById('previewAddCart');
+
+    function formatPrice(n){return `₦${n.toLocaleString()}`}
+    function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]')}
+    function setCart(c){localStorage.setItem('cart',JSON.stringify(c))}
+    function updateCartBadge(){
+      document.getElementById('cart-count').textContent=getCart().length;
+    }
+
+    function renderProducts(list){
+      productGrid.innerHTML='';
+      list.forEach(p=>{
+        const card=document.createElement('div');
+        card.className='product-card';
+        card.innerHTML=`
+          <img src="${p.image}" alt="${p.name}">
+          <div class="info">
+            <h3>${p.name}</h3>
+            <p>${formatPrice(p.price)}</p>
+            <div class="actions"><button class="add-cart" data-id="${p.id}">Add to Cart</button></div>
+          </div>`;
+        card.querySelector('img').addEventListener('click',()=>openPreview(p));
+        productGrid.appendChild(card);
+      });
+    }
+
+    function openPreview(p){
+      img.src=p.image;
+      nameEl.textContent=p.name;
+      desc.textContent=p.description;
+      price.textContent=formatPrice(p.price);
+      addCartBtn.dataset.id=p.id;
+      modal.style.display='flex';
+    }
+
+    closeBtn.addEventListener('click',()=>modal.style.display='none');
+    modal.addEventListener('click',e=>{if(e.target===modal)modal.style.display='none'});
+
+    addCartBtn.addEventListener('click',()=>{
+      const id=Number(addCartBtn.dataset.id);
+      const p=products.find(x=>x.id===id);
+      const cart=getCart();cart.push(p);setCart(cart);updateCartBadge();
+      addCartBtn.textContent='Added ✓';setTimeout(()=>{addCartBtn.textContent='Add to Cart'},900);
+    });
+
+    document.addEventListener('click',e=>{
+      if(e.target.matches('.add-cart')){
+        const id=Number(e.target.dataset.id);
+        const p=products.find(x=>x.id===id);
+        const cart=getCart();cart.push(p);setCart(cart);updateCartBadge();
+        e.target.textContent='Added ✓';setTimeout(()=>{e.target.textContent='Add to Cart'},900);
+      }
+    });
+
+    document.getElementById('desktopSearchForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      filterProducts(e.target.q.value);
+    });
+    document.getElementById('mobileSearchForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      filterProducts(e.target.q.value);
+    });
+
+    function filterProducts(q){
+      q=q.trim().toLowerCase();
+      const filtered=!q?products:products.filter(p=>
+        p.name.toLowerCase().includes(q)||p.description.toLowerCase().includes(q)
+      );
+      renderProducts(filtered);
+    }
+
+    renderProducts(products);
+    updateCartBadge();
+    // === Sort By Feature ===
+const sortSelect = document.getElementById("sortSelect");
+
+sortSelect.addEventListener("change", () => {
+  let sorted = [...products];
+
+  switch (sortSelect.value) {
+    case "priceLow":
+      sorted.sort((a, b) => a.price - b.price);
+      break;
+    case "priceHigh":
+      sorted.sort((a, b) => b.price - a.price);
+      break;
+    case "latest":
+    default:
+      sorted.sort((a, b) => b.id - a.id); // newest first (based on id)
+      break;
+  }
+
+  renderProducts(sorted);
+});
+
+  </script>
+  <!-- Category Drawer -->
+<div class="category-drawer" id="categoryDrawer">
+  <div class="drawer-header">
+    <h3>Categories</h3>
+    <button id="closeDrawerBtn">&times;</button>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const drawerCategories = document.querySelectorAll("#categoryDrawer li");
+  const sidebarCategories = document.querySelectorAll(".sidebar a");
+  const productsTitle = document.getElementById("productsTitle");
+
+  function filterByCategory(category) {
+    const filtered = category === "All" ? products : products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+    productsTitle.textContent = category === "All" ? "All Products" : category + "s";
+    renderProducts(filtered);
+  }
+
+  // --- For sidebar links (desktop) ---
+  sidebarCategories.forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const url = new URL(link.href);
+      const category = url.searchParams.get("q") || "All";
+      filterByCategory(category);
+    });
+  });
+
+  // --- For drawer items (mobile) ---
+  drawerCategories.forEach(li => {
+    li.addEventListener("click", () => {
+      const category = li.textContent.trim();
+      filterByCategory(category);
+      document.getElementById("categoryDrawer").classList.remove("active");
+    });
+  });
+
+  // --- Handle ?q= query from URL ---
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get("q");
+  if (q) filterByCategory(q);
+});
+</script>
+
+  <script>
+  // === Smooth Scroll Reveal Animation ===
+  document.addEventListener("DOMContentLoaded", () => {
+    const reveals = document.querySelectorAll(".product-card, .products-header, .sidebar");
+
+    function handleScroll() {
+      const triggerBottom = window.innerHeight * 0.9;
+      reveals.forEach((el) => {
+        const boxTop = el.getBoundingClientRect().top;
+        if (boxTop < triggerBottom) el.classList.add("active");
+      });
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Trigger once on load
+  });
+  </script>
+</body>
+</html>
