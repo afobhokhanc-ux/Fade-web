@@ -9,6 +9,7 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
+  <link rel="icon" type="image/png" href="favicon.jpg">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -232,7 +233,22 @@
           location.reload();
         });
       });
+
+      // ✅ WhatsApp Checkout Integration
+      const whatsappNumber = "2347086445140"; // Replace with your WhatsApp number
+
+      document.querySelector(".checkout-btn").addEventListener("click", () => {
+        let orderMessage = "Hello, I'd like to order:\n\n";
+        cart.forEach(item => {
+          orderMessage += `${item.name} (₦${item.price}) x ${item.quantity || 1}\n`;
+        });
+
+        const total = cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+        orderMessage += `\nTotal: ₦${total}\n\nPlease confirm availability.`;
+
+        const encodedMessage = encodeURIComponent(orderMessage);
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, "_blank");
+      });
     });
   </script>
-</body>
-</html>
+  </body>

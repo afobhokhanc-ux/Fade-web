@@ -1,439 +1,384 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gift Boxes — KGS</title>
+<meta charset="UTF-8">
+<title>Build Your Gift Box | KGS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.jpg">
+<style>
+:root {
+  --primary: #111;
+  --accent: #c08cff;
+  --bg: #f6f6f6;
+  --card: #ffffff;
+}
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+* { box-sizing: border-box; }
 
-  <style>
-    :root{
-      --bg:#fdf2e9;
-      --card:#fff;
-      --ink:#111;
-      --muted:#6b7280;
-      --accent:#a38686;
-      --radius:12px;
-      --max-width:1200px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-    a{color:inherit;text-decoration:none}
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: #222;
+}
 
-    /* header */
-    header{display:flex;align-items:center;gap:12px;padding:14px 20px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.06);position:sticky;top:0;z-index:1100}
-    .brand{font-weight:700;font-size:1.05rem}
-    .hero-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
-    .icon-btn{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;border:none;background:transparent;cursor:pointer}
+/* HEADER */
+.header {
+  background: var(--card);
+  padding: 18px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 22px;
+  border-bottom: 1px solid #eee;
+}
 
-    /* hero */
-    .hero{max-width:var(--max-width);margin:28px auto 10px;padding:28px 20px;border-radius:14px;background:linear-gradient(180deg, rgba(163,134,134,0.06), rgba(255,255,255,0.6));box-shadow:0 8px 30px rgba(0,0,0,0.04);display:flex;gap:20px;align-items:center}
-    .hero .left{flex:1}
-    .hero h1{margin:0 0 8px;font-size:1.8rem}
-    .hero p{margin:0 0 12px;color:var(--muted)}
-    .btn{background:var(--ink);color:#fff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
-    .btn.secondary{background:#fff;color:var(--ink);border:1px solid rgba(0,0,0,0.06)}
+/* PAGE */
+.page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
 
-    /* layout */
-    .wrap{max-width:var(--max-width);margin:18px auto;padding:0 18px}
-    .filters-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
-    .search-inline{display:flex;gap:8px;align-items:center}
-    .search-inline input{padding:8px 12px;border-radius:999px;border:1px solid #e6e6e6;width:260px}
+.intro {
+  text-align: center;
+  margin-bottom: 30px;
+}
 
-    /* grid */
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-    .card{background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(0,0,0,0.04);transition:transform .28s,box-shadow .28s;display:flex;flex-direction:column;min-height:320px}
-    .card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,0.08)}
-    .media{height:180px;background:#fafafa;display:flex;align-items:center;justify-content:center}
-    .media img{width:100%;height:100%;object-fit:cover}
-    .body{padding:14px;flex:1;display:flex;flex-direction:column}
-    .price{font-weight:700;margin-top:auto}
-    .controls{display:flex;gap:8px;margin-top:12px}
+.intro p {
+  color: #666;
+  font-size: 15px;
+}
 
-    /* modal */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:3000;padding:20px}
-    .panel{width:100%;max-width:760px;border-radius:14px;background:#fff;padding:18px;position:relative;animation:modalIn .24s ease}
-    @keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
-    .close{position:absolute;right:14px;top:10px;border:none;background:none;font-size:20px;cursor:pointer}
-    .panel .row{display:flex;gap:16px;align-items:flex-start}
-    .panel .img{flex:0 0 320px}
-    .panel .img img{width:100%;height:320px;object-fit:cover;border-radius:8px}
-    .details{flex:1}
-    .items-list{margin:10px 0;padding-left:18px;color:var(--muted)}
+/* LAYOUT */
+.builder {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
 
-    /* swatches/qty */
-    .swatches{display:flex;gap:8px;margin:12px 0}
-    .swatches button{width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer}
-    .inline-row{display:flex;gap:8px;align-items:center;margin-top:10px}
-    .qty{display:flex;align-items:center;border-radius:8px;border:1px solid #eee;overflow:hidden}
-    .qty button{padding:8px 10px;border:none;background:#fafafa;cursor:pointer}
-    .qty input{width:50px;text-align:center;border:none;padding:8px}
+@media (max-width: 900px) {
+  .builder { grid-template-columns: 1fr; }
+}
 
-    /* confetti pieces */
-    .confetti-piece{position:fixed;z-index:4000;pointer-events:none;opacity:0;animation:confetti 900ms forwards}
-    @keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(-520px) rotate(720deg);opacity:0}}
+/* PRODUCTS */
+.products {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 16px;
+}
 
-    /* unbox animation */
-    .unbox {
-      animation:unboxOpen .5s ease forwards;
-      transform-origin: 50% 0;
-    }
-    @keyframes unboxOpen {
-      0% { transform: scale(.96) translateY(6px); opacity:0 }
-      40% { transform: scale(1.02) translateY(-6px); opacity:1 }
-      100% { transform: scale(1) translateY(0); opacity:1 }
-    }
+.product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  margin-bottom: 12px;
+  cursor: grab;
+  transition: .2s;
+}
 
-    /* footer */
-    footer{max-width:var(--max-width);margin:30px auto;padding:18px;text-align:center;color:var(--muted)}
+.product:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
 
-    /* responsive */
-    @media (max-width:900px){
-      .hero{flex-direction:column;align-items:flex-start}
-      .panel .row{flex-direction:column}
-      .panel .img{width:100%}
-    }
-  </style>
+.product img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.product-info { flex: 1; }
+
+.product button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* GIFT BOX */
+.giftbox {
+  background: linear-gradient(135deg, #fff, #faf7ff);
+  padding: 20px;
+  border-radius: 18px;
+  border: 2px dashed var(--accent);
+}
+
+.giftbox ul {
+  list-style: none;
+  padding: 0;
+}
+
+.giftbox li {
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.remove {
+  color: crimson;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.total {
+  margin-top: 12px;
+  font-weight: 700;
+}
+
+.discount {
+  font-size: 14px;
+  color: green;
+}
+
+.checkout {
+  margin-top: 15px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(135deg, #111, #333);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.drag-hint {
+  font-size: 13px;
+  color: #777;
+  text-align: center;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- header -->
-  <header>
-    <a href="index.html" class="brand">KGS</a>
+<div class="header">KGS 🎁</div>
 
-    <!-- keep a Home button and cart icon to match your site -->
-    <nav class="hero-cta" aria-label="top actions">
-      <a href="index.html" class="btn secondary" title="Home"><i class="fa-solid fa-house"></i>&nbsp;Home</a>
-      <a href="cart.html" class="icon-btn" title="Cart" aria-label="cart"><i class="fa-solid fa-bag-shopping"></i></a>
-    </nav>
-  </header>
-
-  <!-- hero -->
-  <section class="hero" role="region" aria-label="Gift Boxes">
-    <div class="left">
-      <h1>Gift Boxes — Curated & Ready to Ship</h1>
-      <p>Preview, customize and add a personal message before purchasing. Tap any box to view its contents.</p>
-      <div class="actions">
-        <button class="btn" id="shopNow">Shop Gift Boxes</button>
-        <button class="btn secondary" id="howItWorks">How it works</button>
-      </div>
-    </div>
-    <div class="right" aria-hidden="true">
-      <img src="giftbox.jpg" alt="gift box" style="width:320px;height:180px;object-fit:cover;border-radius:10px">
-    </div>
-  </section>
-
-  <!-- controls + grid -->
-  <main class="wrap">
-    <div class="filters-row">
-      <h2>Our Gift Boxes</h2>
-      <div class="search-inline" role="search">
-        <input id="searchInput" placeholder="Search boxes (e.g. 'luxury', 'glow')" />
-        <select id="categoryFilter" aria-label="Filter by category"><option value="">All categories</option></select>
-      </div>
-    </div>
-
-    <div class="grid" id="grid" aria-live="polite"></div>
-  </main>
-
-  <!-- modal -->
-  <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="panel unbox" role="document" aria-labelledby="modalTitle">
-      <button class="close" id="closeModal" aria-label="Close">&times;</button>
-      <div class="row">
-        <aside class="img"><img id="modalImg" src="" alt=""></aside>
-        <div class="details">
-          <h2 id="modalTitle"></h2>
-          <p id="modalTagline" style="color:var(--muted)"></p>
-
-          <div><strong>What's inside</strong>
-            <ul id="modalItems" class="items-list"></ul>
-          </div>
-
-          <div><strong>Box color</strong><div class="swatches" id="swatches"></div></div>
-
-          <div class="inline-row">
-            <div class="qty" aria-label="quantity selector">
-              <button id="qtyMinus">−</button>
-              <input id="qtyInput" value="1" type="number" min="1" />
-              <button id="qtyPlus">+</button>
-            </div>
-            <div style="flex:1">
-              <label style="display:block;font-size:12px;color:var(--muted)">Add a message (optional)</label>
-              <input id="giftMessage" placeholder="To: ... · From: ..." style="width:100%;padding:8px;border-radius:8px;border:1px solid #eee" />
-            </div>
-          </div>
-
-          <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-            <div style="font-weight:800;font-size:1.05rem" id="modalPrice"></div>
-            <button class="btn" id="addToCartBtn">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="page">
+  <div class="intro">
+    <h1>Curate Your Gift Box</h1>
+    <p>Drag items or tap “Add”.  
+    <strong>10% discount</strong> when box is full 🎉</p>
   </div>
 
-  <footer>
-    <p>Questions? <a href="https://instagram.com/your_handle" target="_blank">Instagram</a> · <a href="https://wa.me/00000000000" target="_blank">WhatsApp</a></p>
-    <p style="font-size:.9rem;color:var(--muted)">© KGS STORE</p>
-  </footer>
+  <div class="builder">
 
-  <script>
-  (function(){
+    <!-- PRODUCTS -->
+    <div class="products">
+      <h3>Available Products</h3>
+      <div id="productList"></div>
+      <div class="drag-hint">🖱️ Drag items into the gift box</div>
+    </div>
 
-    /* ---------- Data loading: try JSON file first, then fallback ---------- */
-    async function loadBoxes(){
-      try{
-        const resp = await fetch('giftboxes.json', {cache: "no-store"});
-        if(!resp.ok) throw new Error('no json');
-        const data = await resp.json();
-        if(Array.isArray(data) && data.length) return data;
-        throw new Error('invalid json');
-      }catch(err){
-        // fallback inline
-        return [
-          { id:1, title:"Luxury Glow Box", tagline:"Premium picks for a radiant look", price:7500,
-            img:"giftbox.jpg",
-            items:["Gold-plated necklace","Arm candy bracelet","High-shine lipgloss"], categories:["Luxury","Makeup"] },
-          { id:2, title:"Sweetheart Combo", tagline:"Romantic set with a personal card", price:4200,
-            img:"https://source.unsplash.com/600x400/?romantic,gift",
-            items:["Heart charm keychain","Dainty earrings","Personal message card"], categories:["Romantic","Accessories"] },
-          { id:3, title:"Mini Joy Box", tagline:"Small but delightful — budget-friendly", price:1800,
-            img:"https://source.unsplash.com/600x400/?gift,small",
-            items:["Lipliner","Mini lipgloss","Keychain"], categories:["Budget","Makeup"] },
-          { id:4, title:"Pamper & Glow", tagline:"Self-care set for a relaxing evening", price:6200,
-            img:"https://source.unsplash.com/600x400/?selfcare,gift",
-            items:["Facemask","Lipgloss","Mini perfume"], categories:["Selfcare","Luxury"] }
-        ];
-      }
-    }
+    <!-- GIFT BOX -->
+    <div class="giftbox" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <h3>Your Gift Box</h3>
+      <div><span id="count">0</span>/4 items</div>
+      <ul id="boxItems"></ul>
+      <div class="total">Total: ₦<span id="total">0</span></div>
+      <div class="discount" id="discount"></div>
+      <button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
+    </div>
 
-    /* ---------- Helpers: cart ---------- */
-    function getCart(){ return JSON.parse(localStorage.getItem('cart') || '[]') }
-    function setCart(c){ localStorage.setItem('cart', JSON.stringify(c)) }
-    function updateCartBadge(){
-      // update any #cart-count on the page
-      const el = document.getElementById('cart-count');
-      if(el) el.textContent = getCart().length;
-    }
+  </div>
+</div>
 
-    /* ---------- UI ---------- */
-    const grid = document.getElementById('grid');
-    const searchInput = document.getElementById('searchInput');
-    const categoryFilter = document.getElementById('categoryFilter');
+<script>
+/* ----------------------------------
+   CONFIG
+---------------------------------- */
+const MAX_ITEMS = 4;
+const DISCOUNT_RATE = 0.01;
 
-    const modal = document.getElementById('modal');
-    const modalImg = document.getElementById('modalImg');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalTagline = document.getElementById('modalTagline');
-    const modalItems = document.getElementById('modalItems');
-    const modalPrice = document.getElementById('modalPrice');
-    const swatchesEl = document.getElementById('swatches');
-    const qtyInput = document.getElementById('qtyInput');
-    const qtyPlus = document.getElementById('qtyPlus');
-    const qtyMinus = document.getElementById('qtyMinus');
-    const giftMessage = document.getElementById('giftMessage');
-    const addToCartBtn = document.getElementById('addToCartBtn');
-    const closeModalBtn = document.getElementById('closeModal');
-    const shopNow = document.getElementById('shopNow');
-    const howItWorks = document.getElementById('howItWorks');
+/* ----------------------------------
+   LOAD PRODUCTS FROM SHOP STORAGE
+---------------------------------- */
+const products = JSON.parse(localStorage.getItem("products")) || [];
 
-    const swatchColors = [
-      {name:"Rose", color:"#F8C6C6"},
-      {name:"Ivory", color:"#FFF7ED"},
-      {name:"Mint", color:"#DFF3EA"},
-      {name:"Midnight", color:"#111827"}
-    ];
+// fallback (in case shop page not visited yet)
+if (!products.length) {
+  products.push(
 
-    let boxes = [];
-    let currentBox = null;
-    let chosenColor = swatchColors[0].color;
+  { id:1, name:"Facemask", price:500, category:"Facemask", image:"face.jpg", description:"Soft and comfortable for the face." },
+  { id:2, name:"Facemask", price:500, category:"Facemask", image:"fm.jpg", description:"Soft and smooth feeling." },
+  { id:3, name:"Necklace Elegant", price:2500, category:"Necklace", image:"necklace.jpg", description:"Gold-plated necklace." },
+  { id:4, name:"Earrings Cute", price:2500, category:"Earring", image:"earing.jpg", description:"Stylish hoop earrings." },
+  { id:5, name:"Bracelet Charm", price:4500, category:"Bracelet", image:"charm bracelet.jpg", description:"Beaded charm bracelet." },
+  { id:6, name:"Lipgloss Shine", price:1500, category:"Lipgloss", image:"lipgloss.jpg", description:"High-shine lipgloss." },
+  { id:7, name:"Lipliner Smooth", price:500, category:"Lipliner", image:"lipliner.jpg", description:"Long-lasting lipliner." },
+  { id:8, name:"Keychain Cute", price:2500, category:"Keychain", image:"keychain.jpg", description:"Gift-ready keychain." },
+  { id:9, name:"Floral Claw", price:2000, category:"Claw Clip", image:"Floral claw clip.jpg", description:"Easy to use head clip." },
+  { id:10, name:"Claw", price:2000, category:"Claw Clip", image:"claw.jpg", description:"Easy to use head clip." },
+  { id:11, name:"Arm Candy", price:3500, category:"Arm Candy", image:"arm candy.jpg", description:"Stylish arm candy that elevate any outfit." },
+  { id:12, name:"Claw Clip", price:2000, category:"Claw Clip", image:"clip.jpg", description:"BRB." },
+  { id:13, name:"Floral Claw Clip", price:2500, category:"Claw Clip", image:"flo clip.jpg", description:"Perfect for you❤️." },
+  { id:14, name:"Dainty Necklace Gold", price:3500, category:"Necklace", image:"density necklace.jpg", description:"Matches any dress." },
+  { id:15, name:"Dainty Necklace", price:3500, category:"Necklace", image:"dainty2.jpg", description:"Matches any dress." },
+  { id:16, name:"Peel off Lipgloss", price:2500, category:"Lipgloss", image:"lipgloss remove.jpg", description:"Perfect for your lips." },
+  { id:17, name:"Floral Earring", price:2500, category:"Earring", image:"floral earring.jpg", description:"Matches any dress." },
+  { id:18, name:"Acrylic Earring", price:1000, category:"Earring", image:"earri ng.jpg", description:"Matches any dress." },
+  { id:19, name:"Lipliner", price:500, category:"Lipliner", image:"2lip.jpg", description:"Brings out the shape of your lips." },
+  { id:20, name:"Peel off Lipgloss", price:2500, category:"Lipgloss", image:"lipliner remover2.jpg", description:"Perfect for your lips." },
+  /**{ id:21, name:"Peel off Lipgloss", price:2500, category:"Lipgloss", image:"lipliner remover2.jpg", description:"BRB." }, **/ 
+  { id:22, name:"KeyChain", price:3000, category:"KeyChain", image:"22.jpg", description:"Fashionable keychain for you." },
+  { id:23, name:"KeyChain", price:3000, category:"KeyChain", image:"23.jpg", description:"Fashionable keychain for you." },
+  { id:24, name:"KeyChain", price:3000, category:"KeyChain", image:"24.jpg", description:"Fashionable keychain for you." },
+  { id:25, name:"KeyChain", price:3000, category:"KeyChain", image:"25.jpg", description:"Fashionable keychain for you." },
+  { id:26, name:"Statement Earring", price:2500, category:"Earring", image:"26.jpg", description:"Matches any dress." },
+  { id:27, name:"Statement Earring", price:4500, category:"Earring", image:"27.jpg", description:"Matches any dress." },
+  { id:28, name:"Statement Earring", price:2500, category:"Earring", image:"28.jpg", description:"Matches any dress." },
+  { id:29, name:"Statement Earring", price:2500, category:"Earring", image:"29.jpg", description:"Matches any dress." },
+  /** { id:30, name:"Peel off Lipgloss", price:2500, category:"Lipgloss", image:"30.jpg", description:"BRB." }, **/
+  { id:31, name:"Lip Mask", price:700, category:"Lip Mask", image:"31.jpg", description:"Nourish and repair your lips." },
+  { id:32, name:"Eye Mask", price:700, category:"Eye Mask", image:"32.jpg", description:"Treat the delicate skin around your eyes." },
+  { id:33, name:"Eye Mask", price:700, category:"Eye Mask", image:"33.jpg", description:"Treat the delicate skin around your eyes." },
+  { id:34, name:"Lip Mask(Orange Moisturizer)", price:700, category:"Lip Mask", image:"34.jpg", description:"Nourish and repair your lips." },
+  { id:35, name:"Lip Mask(Cherry Pink Tender)", price:700, category:"Lip Mask", image:"35.jpg", description:"Nourish and repair your lips." },
+  { id:36, name:"Lip Mask(Honey Peach Repair)", price:700, category:"Lip Mask", image:"36.jpg", description:"Nourish and repair your lips." },
+  { id:37, name:"Lip Mask(Aloe Vera Hydrate)", price:700, category:"Lip Mask", image:"37.jpg", description:"Nourish and repair your lips." },
+  { id:38, name:"Lipgloss", price:1500, category:"Lipgloss", image:"38.jpg", description:"Suitable for your lips." },
+  { id:39, name:"Lip Mask(Coconut Hydrate)", price:2500, category:"Lip Mask", image:"39.jpg", description:"Nourish and repair your lips." },
+  { id:40, name:"Hair Bow", price:2000, category:"Hair Bow", image:"40.jpg", description:"Style your hair with fashionable Hair bow." },
+  { id:41, name:"Hair Bow", price:2000, category:"Hair Bow", image:"41.jpg", description:"Style your hair with fashionable Hair bow" },
+  { id:42, name:"Hair Band", price:1500, category:"Hair Band", image:"42.jpg", description:"Style your hair with fashionable Hair band." },
+  { id:43, name:"Hair Band", price:1500, category:"Hair Band", image:"43.jpg", description:"Style your hair with fashionable Hair band." },
+  { id:44, name:"Hair Band", price:1500, category:"Hair Band", image:"44.jpg", description:"Style your hair with fashionable Hair band." },
+  { id:45, name:"Hair Band", price:2500, category:"Hair Band", image:"45.jpg", description:"Style your hair with fashionable Hair band." },
+  { id:46, name:"Floral Claw Clip", price:2500, category:"Claw Clip", image:"46.jpg", description:"Style your hair with fashionable Claw clip." },
+  { id:47, name:"Hair Band", price:1500, category:"Hair Band", image:"47.jpg", description:"Style your hair with fashionable Hair band." },
+  { id:48, name:"Hair Band", price:1500, category:"Hair Band", image:"48.jpg", description:"Style your hair with fashionable Hair band." },
+  { id:49, name:"Floral Claw Clip", price:2000, category:"Claw Clip", image:"49.jpg", description:"Style your hair with fashionable Claw Clip." },
+  { id:50, name:"Floral Claw Clip", price:2000, category:"Claw Clip", image:"50.jpg", description:"Style your hair with fashionable Claw clip." }
 
-    function formatPrice(n){ return `₦${Number(n).toLocaleString()}` }
+  );
+}
 
-    function createCard(box){
-      const el = document.createElement('article');
-      el.className = 'card';
-      el.innerHTML = `
-        <div class="media"><img loading="lazy" src="${box.img}" alt="${escapeHtml(box.title)}"></div>
-        <div class="body">
-          <h3>${escapeHtml(box.title)}</h3>
-          <p style="color:var(--muted)">${escapeHtml(box.tagline)}</p>
-          <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center">
-            <div class="price">${formatPrice(box.price)}</div>
-            <div class="controls">
-              <button class="btn view" data-id="${box.id}">View Contents</button>
-              <button class="btn secondary quick-add" data-id="${box.id}">Quick Add</button>
-            </div>
-          </div>
-        </div>
-      `;
-      el.querySelector('.view').addEventListener('click', ()=> openModal(box.id));
-      el.querySelector('.quick-add').addEventListener('click', ()=> quickAdd(box.id));
-      return el;
-    }
+/* ----------------------------------
+   STATE
+---------------------------------- */
+let giftBox = [];
 
-    function renderGrid(list){
-      grid.innerHTML = '';
-      if(!list || !list.length){
-        grid.innerHTML = '<p style="grid-column:1/-1;color:var(--muted);text-align:center;padding:18px">No boxes found</p>';
-        return;
-      }
-      list.forEach(b => grid.appendChild(createCard(b)));
-    }
+/* ----------------------------------
+   RENDER PRODUCTS
+---------------------------------- */
+const productList = document.getElementById("productList");
 
-    function populateCategories(){
-      const set = new Set();
-      boxes.forEach(b => (b.categories||[]).forEach(c => set.add(c)));
-      const arr = [...set].sort();
-      arr.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c;
-        opt.textContent = c;
-        categoryFilter.appendChild(opt);
-      });
-    }
+products.forEach(p => {
+  const div = document.createElement("div");
+  div.className = "product";
+  div.draggable = true;
+  div.dataset.id = p.id;
 
-    function applyFilters(){
-      const q = (searchInput.value||'').trim().toLowerCase();
-      const cat = categoryFilter.value;
-      const result = boxes.filter(b => {
-        const byQ = !q || (b.title + ' ' + (b.tagline||'') + ' ' + (b.items||[]).join(' ')).toLowerCase().includes(q);
-        const byCat = !cat || (b.categories||[]).map(x=>x.toLowerCase()).includes(cat.toLowerCase());
-        return byQ && byCat;
-      });
-      renderGrid(result);
-    }
+  div.ondragstart = e => e.dataTransfer.setData("id", p.id);
 
-    /* ---------- Modal logic ---------- */
-    function openModal(id){
-      const box = boxes.find(x => Number(x.id) === Number(id));
-      if(!box) return;
-      currentBox = box;
-      modalImg.src = box.img;
-      modalTitle.textContent = box.title;
-      modalTagline.textContent = box.tagline || '';
-      modalItems.innerHTML = (box.items||[]).map(it => `<li>${escapeHtml(it)}</li>`).join('');
-      modalPrice.textContent = formatPrice(box.price);
-      qtyInput.value = 1;
-      giftMessage.value = '';
-      chosenColor = swatchColors[0].color;
-      renderSwatches();
-      // show modal
-      modal.style.display = 'flex';
-      modal.setAttribute('aria-hidden','false');
-      // add small unbox animation class to .panel
-      const panel = modal.querySelector('.panel');
-      if(panel){
-        panel.classList.remove('unbox');
-        void panel.offsetWidth;
-        panel.classList.add('unbox');
-      }
-      // focus add button
-      addToCartBtn.focus();
-    }
+  div.innerHTML = `
+    <img src="${p.image}">
+    <div class="product-info">
+      <h4>${p.name}</h4>
+      <span>₦${p.price.toLocaleString()}</span>
+    </div>
+    <button onclick="addToGiftBox(${p.id})">Add</button>
+  `;
 
-    function closeModal(){
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden','true');
-    }
+  productList.appendChild(div);
+});
 
-    function renderSwatches(){
-      swatchesEl.innerHTML = '';
-      swatchColors.forEach(s=>{
-        const btn = document.createElement('button');
-        btn.title = s.name;
-        btn.style.background = s.color;
-        btn.addEventListener('click', ()=> {
-          chosenColor = s.color;
-          swatchesEl.querySelectorAll('button').forEach(x => x.style.outline = 'none');
-          btn.style.outline = '3px solid rgba(0,0,0,0.08)';
-        });
-        swatchesEl.appendChild(btn);
-      });
-      const first = swatchesEl.querySelector('button'); if(first) first.style.outline = '3px solid rgba(0,0,0,0.08)';
-    }
+/* ----------------------------------
+   GIFT BOX LOGIC
+---------------------------------- */
+function addToGiftBox(id) {
+  if (giftBox.length >= MAX_ITEMS) {
+    alert("Gift box is full 🎁");
+    return;
+  }
 
-    qtyPlus.addEventListener('click', ()=> qtyInput.value = Math.max(1, Number(qtyInput.value)+1));
-    qtyMinus.addEventListener('click', ()=> qtyInput.value = Math.max(1, Number(qtyInput.value)-1));
-    closeModalBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+  const product = products.find(p => p.id == id);
+  giftBox.push(product);
+  updateUI();
+}
 
-    addToCartBtn.addEventListener('click', ()=> {
-      if(!currentBox) return;
-      const qty = Math.max(1, Number(qtyInput.value) || 1);
-      const message = (giftMessage.value || '').trim();
-      const cart = getCart();
-      cart.push({
-        id: currentBox.id,
-        title: currentBox.title,
-        price: currentBox.price,
-        qty, color: chosenColor, message, img: currentBox.img
-      });
-      setCart(cart);
-      updateCartBadge();
-      showConfetti();
-      addToCartBtn.textContent = 'Added ✓';
-      setTimeout(()=> addToCartBtn.textContent = 'Add to Cart', 900);
-    });
+function removeItem(i) {
+  giftBox.splice(i, 1);
+  updateUI();
+}
 
-    function quickAdd(id){
-      const box = boxes.find(x => Number(x.id) === Number(id));
-      if(!box) return;
-      const cart = getCart();
-      cart.push({ id:box.id, title:box.title, price:box.price, qty:1, color:swatchColors[0].color, img:box.img });
-      setCart(cart);
-      updateCartBadge();
-      showConfetti();
-    }
+function updateUI() {
+  const list = document.getElementById("boxItems");
+  const totalEl = document.getElementById("total");
+  const countEl = document.getElementById("count");
+  const discountEl = document.getElementById("discount");
 
-    /* ---------- small confetti ---------- */
-    function showConfetti(){
-      for(let i=0;i<20;i++){
-        const p = document.createElement('div');
-        p.className = 'confetti-piece';
-        document.body.appendChild(p);
-        const size = Math.random()*12 + 6;
-        p.style.width = size + 'px';
-        p.style.height = (size*0.6) + 'px';
-        p.style.left = (window.innerWidth/2 + (Math.random()*220-110)) + 'px';
-        p.style.top = (window.innerHeight - 120) + 'px';
-        p.style.background = ['#ffb4b4','#ffd8b4','#d7ffd8','#b4d8ff','#ffd8e6'][Math.floor(Math.random()*5)];
-        p.style.animationDuration = (900 + Math.random()*300) + 'ms';
-        setTimeout(()=> p.remove(), 1400);
-      }
-    }
+  list.innerHTML = "";
+  let total = 0;
 
-    /* ---------- Utilities ---------- */
-    function debounce(fn, delay=200){ let t; return function(...a){ clearTimeout(t); t=setTimeout(()=> fn.apply(this,a), delay) } }
-    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]) }
+  giftBox.forEach((item, i) => {
+    total += item.price;
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${item.name}
+      <span class="remove" onclick="removeItem(${i})">✕</span>
+    `;
+    list.appendChild(li);
+  });
 
-    /* ---------- Init ---------- */
-    (async function init(){
-      boxes = await loadBoxes();
-      populateCategories();
-      renderGrid(boxes);
-      updateCartBadge();
+  if (giftBox.length === MAX_ITEMS) {
+    const discount = total * DISCOUNT_RATE;
+    total -= discount;
+    discountEl.textContent = `🎉 10% Discount Applied (-₦${discount.toLocaleString()})`;
+  } else {
+    discountEl.textContent = "";
+  }
 
-      searchInput.addEventListener('input', debounce(applyFilters, 200));
-      categoryFilter.addEventListener('change', applyFilters);
+  totalEl.textContent = total.toLocaleString();
+  countEl.textContent = giftBox.length;
+}
 
-      // keyboard escape
-      window.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+/* ----------------------------------
+   DRAG & DROP
+---------------------------------- */
+function allowDrop(e) { e.preventDefault(); }
+function drop(e) {
+  e.preventDefault();
+  addToGiftBox(e.dataTransfer.getData("id"));
+}
 
-      // shopnow smooth scroll
-      shopNow.addEventListener('click', ()=> grid.scrollIntoView({behavior:'smooth'}));
-      howItWorks.addEventListener('click', ()=> alert("Choose a box → View contents → Customize → Add to cart"));
+/* ----------------------------------
+   WHATSAPP CHECKOUT
+---------------------------------- */
+function checkout() {
+  if (!giftBox.length) {
+    alert("Your gift box is empty");
+    return;
+  }
 
-      // open by ?box=ID param if present
-      const params = new URLSearchParams(location.search);
-      const boxId = params.get('box');
-      if(boxId) setTimeout(()=> openModal(Number(boxId)), 250);
-    })();
+  let msg = "Hello, I want to order a custom gift box:%0A";
+  let total = 0;
 
-  })();
-  </script>
+  giftBox.forEach(p => {
+    msg += `- ${p.name} (₦${p.price})%0A`;
+    total += p.price;
+  });
+
+  if (giftBox.length === MAX_ITEMS) {
+    total -= total * DISCOUNT_RATE;
+    msg += "🎉 10% Discount Applied%0A";
+  }
+
+  msg += `%0ATotal: ₦${total.toLocaleString()}`;
+
+  window.open("https://wa.me/2347086445140?text=" + msg, "_blank");
+}
+</script>
+
 </body>
 </html>
