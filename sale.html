@@ -5,6 +5,7 @@
 <title>Build Your Gift Box | KGS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.jpg">
+
 <style>
 :root {
   --primary: #111;
@@ -135,11 +136,6 @@ body {
   font-weight: 700;
 }
 
-.discount {
-  font-size: 14px;
-  color: green;
-}
-
 .checkout {
   margin-top: 15px;
   width: 100%;
@@ -167,10 +163,8 @@ body {
 <div class="page">
   <div class="intro">
     <h1>Curate Your Gift Box</h1>
-    <p>Drag items or tap “Add”.  
-    <strong>10% discount</strong> when box is full 🎉</p>
-    <p><strong>Extra ₦2,300 will be charged from the box</strong></p>
-    
+    <p>Drag items or tap “Add” to build your perfect gift 🎁</p>
+    <p><strong>Extra ₦2,300 gift box fee applies</strong></p>
   </div>
 
   <div class="builder">
@@ -180,16 +174,14 @@ body {
       <h3>Available Products</h3>
       <div id="productList"></div>
       <div class="drag-hint">🖱️ Drag items into the gift box</div>
-    
     </div>
 
     <!-- GIFT BOX -->
     <div class="giftbox" ondrop="drop(event)" ondragover="allowDrop(event)">
       <h3>Your Gift Box</h3>
-      <div><span id="count">0</span>/4 items</div>
+      <div><span id="count">0</span> items</div>
       <ul id="boxItems"></ul>
       <div class="total">Total: ₦<span id="total">0</span></div>
-      <div class="discount" id="discount"></div>
       <button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
     </div>
 
@@ -198,20 +190,9 @@ body {
 
 <script>
 /* ----------------------------------
-   CONFIG
+   LOAD PRODUCTS
 ---------------------------------- */
-const MAX_ITEMS = 4;
-const DISCOUNT_RATE = 0.01;
-
-/* ----------------------------------
-   LOAD PRODUCTS FROM SHOP STORAGE
----------------------------------- */
-const products = JSON.parse(localStorage.getItem("products")) || [];
-
-// fallback (in case shop page not visited yet)
-if (!products.length) {
-  products.push(
-
+const products = JSON.parse(localStorage.getItem("products")) || [
   { id:1, name:"Facemask", price:500, category:"Facemask", image:"face.jpg", description:"Soft and comfortable for the face." },
   { id:2, name:"Facemask", price:500, category:"Facemask", image:"fm.jpg", description:"Soft and smooth feeling." },
  /** { id:3, name:"Necklace Elegant", price:2500, category:"Necklace", image:"necklace.jpg", description:"Gold-plated necklace." },
@@ -263,13 +244,13 @@ if (!products.length) {
  /** { id:49, name:"Floral Claw Clip", price:2000, category:"Claw Clip", image:"49.jpg", description:"Style your hair with fashionable Claw Clip." },
   { id:50, name:"Floral Claw Clip", price:2000, category:"Claw Clip", image:"50.jpg", description:"Style your hair with fashionable Claw clip." } **/
 
-  );
-}
+];
 
 /* ----------------------------------
    STATE
 ---------------------------------- */
 let giftBox = [];
+const BOX_FEE = 2300;
 
 /* ----------------------------------
    RENDER PRODUCTS
@@ -300,18 +281,13 @@ products.forEach(p => {
    GIFT BOX LOGIC
 ---------------------------------- */
 function addToGiftBox(id) {
-  if (giftBox.length >= MAX_ITEMS) {
-    alert("Gift box is full 🎁");
-    return;
-  }
-
   const product = products.find(p => p.id == id);
   giftBox.push(product);
   updateUI();
 }
 
-function removeItem(i) {
-  giftBox.splice(i, 1);
+function removeItem(index) {
+  giftBox.splice(index, 1);
   updateUI();
 }
 
@@ -319,7 +295,6 @@ function updateUI() {
   const list = document.getElementById("boxItems");
   const totalEl = document.getElementById("total");
   const countEl = document.getElementById("count");
-  const discountEl = document.getElementById("discount");
 
   list.innerHTML = "";
   let total = 0;
@@ -334,12 +309,8 @@ function updateUI() {
     list.appendChild(li);
   });
 
-  if (giftBox.length === MAX_ITEMS) {
-    const discount = total * DISCOUNT_RATE;
-    total -= discount;
-    discountEl.textContent = `🎉 10% Discount Applied (-₦${discount.toLocaleString()})`;
-  } else {
-    discountEl.textContent = "";
+  if (giftBox.length > 0) {
+    total += BOX_FEE;
   }
 
   totalEl.textContent = total.toLocaleString();
@@ -372,14 +343,15 @@ function checkout() {
     total += p.price;
   });
 
-  if (giftBox.length === MAX_ITEMS) {
-    total -= total * DISCOUNT_RATE;
-    msg += "🎉 10% Discount Applied%0A";
-  }
+  total += BOX_FEE;
 
+  msg += `%0AGift Box Fee: ₦${BOX_FEE.toLocaleString()}`;
   msg += `%0ATotal: ₦${total.toLocaleString()}`;
 
-  window.open("https://wa.me/2347086445140?text=" + msg, "_blank");
+  window.open(
+    "https://wa.me/2347086445140?text=" + msg,
+    "_blank"
+  );
 }
 </script>
 
